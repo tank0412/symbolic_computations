@@ -2,6 +2,7 @@ import java.util.Scanner;
 class Symbolic {
     private static boolean ispow = false;
     private static boolean hasSymbol = false;
+    private static boolean islog = false;
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter  an expression");
@@ -25,19 +26,14 @@ class Symbolic {
              continue;
          }
          if (Symb[i] == 'e' && Symb[i + 1] == '^' && Symb[i + 2] == 'x') {
-             if (ispow == true) {
-                 Result[i+2] = 'e';
-                 Result[i + 3] = '^';
-                 Result[i + 4] = 'x';
-                 continue;
-             }
-             else {
-                 Result[i +1] = 'e';
-                 Result[i + 2] = '^';
-                 Result[i + 3] = 'x';
-                 continue;
-             }
-             //i+=2;
+             //for e^ x
+             Result = epsilon(Symb,Result,i);
+             continue;
+         }
+         if (Symb[i] == 'l' && Symb[i + 1] == 'o' && Symb[i + 2] == 'g') {
+             //for log
+             Result = log(Symb,Result,i);
+             continue;
          }
          // is -
          if (Symb[i] == '-') {
@@ -45,8 +41,13 @@ class Symbolic {
                  Result[i + 2] = '-';
                  hasSymbol = true;
              } else {
-                 Result[i+1] = '-';
-                 hasSymbol = true;
+                 if(islog == true) {
+                     Result[i + 5] = '-';
+                 }
+                 else {
+                     Result[i + 1] = '-';
+                     hasSymbol = true;
+                 }
              }
          }
          //is +
@@ -55,8 +56,13 @@ class Symbolic {
                  Result[i + 2] = '+';
                  hasSymbol = true;
              } else {
-                 Result[i+1] = '+';
-                 hasSymbol = true;
+                 if(islog == true) {
+                     Result[i + 5] = '+';
+                 }
+                 else {
+                     Result[i + 1] = '+';
+                     hasSymbol = true;
+                 }
              }
          }
      }
@@ -66,6 +72,14 @@ class Symbolic {
 
     public static char[] pow(char[] Symb, char[] Result , int i){
         ispow = true;
+        if(islog == true) {
+            Result[i +5] = Symb[i + 2];
+            Result[i + 6] = Symb[i];
+            Result[i + 7] = Symb[i + 1];
+            int digit = (Character.getNumericValue(Symb[i + 2])) - 1;
+            Result[i + 8] = (char) (digit + '0');
+            return Result;
+        }
         if(hasSymbol == false) {
             Result[i] = Symb[i + 2];
             Result[i + 1] = Symb[i];
@@ -82,5 +96,39 @@ class Symbolic {
             Result[i + 5] = (char) (digit + '0');
             return Result;
         }
+    }
+    public static char[] epsilon(char[] Symb, char[] Result , int i) {
+        if (ispow == true) {
+            Result[i+2] = 'e';
+            Result[i + 3] = '^';
+            Result[i + 4] = 'x';
+            return Result;
+        }
+        else {
+            if(islog == true) {
+                Result[i + 5] = Symb[i];
+                Result[i + 6] = Symb[i + 1];
+                Result[i +7] = Symb[i + 2];
+                return Result;
+            }
+            else {
+                Result[i + 1] = 'e';
+                Result[i + 2] = '^';
+                Result[i + 3] = 'x';
+                return Result;
+            }
+        }
+    }
+    private static char[] log(char[] Symb, char[] Result , int i) {
+        islog = true;
+        Result[i+2] = '1';
+        Result[i + 3] = '/';
+        Result[i + 4] = '(';
+        Result[i + 5] = Symb[i+4];
+        Result[i + 6] = 'l';
+        Result[i + 7] = 'n';
+        Result[i + 8] = Symb[i+3];
+        Result[i + 9] = ')';
+        return Result;
     }
 }

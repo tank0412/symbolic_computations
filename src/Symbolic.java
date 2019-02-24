@@ -4,6 +4,7 @@ class Symbolic {
     private static boolean hasSymbol = false;
     private static boolean islog = false;
     private static boolean isln = false;
+    private static boolean issin = false;
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter  an expression");
@@ -41,9 +42,14 @@ class Symbolic {
              Result = ln(Symb,Result,i);
              continue;
          }
+         if (Symb[i] == 's' && Symb[i + 1] == 'i' && Symb[i + 2] == 'n') {
+             //for sin
+             Result = sin(Symb,Result,i);
+             continue;
+         }
          // is -
          if (Symb[i] == '-') {
-             if (ispow == true || isln == true) {
+             if (ispow == true || isln == true || issin == true) {
                  Result[i + 2] = '-';
                  hasSymbol = true;
              } else {
@@ -58,7 +64,7 @@ class Symbolic {
          }
          //is +
          if (Symb[i] == '+') {
-             if (ispow == true|| isln == true) {
+             if (ispow == true|| isln == true || issin == true) {
                  Result[i + 2] = '+';
                  hasSymbol = true;
              } else {
@@ -104,7 +110,7 @@ class Symbolic {
         }
     }
     public static char[] epsilon(char[] Symb, char[] Result , int i) {
-        if (ispow == true || isln == true) {
+        if (ispow == true || isln == true || issin == true) {
             Result[i+2] = 'e';
             Result[i + 3] = '^';
             Result[i + 4] = 'x';
@@ -159,5 +165,23 @@ class Symbolic {
         }
 
         return Result;
+    }
+    public static char[] sin(char[] Symb, char[] Result , int i) {
+            issin = true;
+        if(islog == true) {
+            Result[i + 5] = 'c';
+            Result[i + 6] = 'o';
+            Result[i + 7] = 's';
+            Result[i + 8] = Symb[i + 3];
+            return Result;
+        }
+        else {
+            Result[i + 2] = 'c';
+            Result[i + 3] = 'o';
+            Result[i + 4] = 's';
+            Result[i + 5] = Symb[i + 3];
+            return Result;
+        }
+
     }
 }

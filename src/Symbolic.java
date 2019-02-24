@@ -5,6 +5,8 @@ class Symbolic {
     private static boolean islog = false;
     private static boolean isln = false;
     private static boolean issin = false;
+    private static boolean iscos = false;
+    private static boolean isminus = false;
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter  an expression");
@@ -29,51 +31,61 @@ class Symbolic {
          }
          if (Symb[i] == 'e' && Symb[i + 1] == '^' && Symb[i + 2] == 'x') {
              //for e^ x
-             Result = epsilon(Symb,Result,i);
+             Result = epsilon(Symb, Result, i);
              continue;
          }
          if (Symb[i] == 'l' && Symb[i + 1] == 'o' && Symb[i + 2] == 'g') {
              //for log
-             Result = log(Symb,Result,i);
+             Result = log(Symb, Result, i);
              continue;
          }
          if (Symb[i] == 'l' && Symb[i + 1] == 'n' && Symb[i + 2] == 'x') {
              //for ln
-             Result = ln(Symb,Result,i);
+             Result = ln(Symb, Result, i);
              continue;
          }
          if (Symb[i] == 's' && Symb[i + 1] == 'i' && Symb[i + 2] == 'n') {
              //for sin
-             Result = sin(Symb,Result,i);
+             Result = sin(Symb, Result, i);
+             continue;
+         }
+         if (Symb[i] == 'c' && Symb[i + 1] == 'o' && Symb[i + 2] == 's') {
+             //for cos
+             Result = cos(Symb, Result, i);
              continue;
          }
          // is -
          if (Symb[i] == '-') {
-             if (ispow == true || isln == true || issin == true) {
-                 Result[i + 2] = '-';
-                 hasSymbol = true;
-             } else {
-                 if(islog == true) {
-                     Result[i + 5] = '-';
-                 }
-                 else {
-                     Result[i + 1] = '-';
+             if (!(Symb[i+1] == 'c' && Symb[i + 2] == 'o' && Symb[i + 3] == 's')) {
+                 if (ispow == true || isln == true || issin == true) {
+                     Result[i + 2] = '-';
                      hasSymbol = true;
+                 } else {
+                     if (islog == true) {
+                         Result[i + 5] = '-';
+                     } else {
+                         Result[i + 1] = '-';
+                         hasSymbol = true;
+                     }
                  }
+             }
+             else{
+                isminus = true;
              }
          }
          //is +
          if (Symb[i] == '+') {
-             if (ispow == true|| isln == true || issin == true) {
-                 Result[i + 2] = '+';
-                 hasSymbol = true;
-             } else {
-                 if(islog == true) {
-                     Result[i + 5] = '+';
-                 }
-                 else {
-                     Result[i + 1] = '+';
+             if (!(Symb[i+1] == 'c' && Symb[i + 2] == 'o' && Symb[i + 3] == 's')) {
+                 if (ispow == true || isln == true || issin == true) {
+                     Result[i + 2] = '+';
                      hasSymbol = true;
+                 } else {
+                     if (islog == true) {
+                         Result[i + 5] = '+';
+                     } else {
+                         Result[i + 1] = '+';
+                         hasSymbol = true;
+                     }
                  }
              }
          }
@@ -180,6 +192,32 @@ class Symbolic {
             Result[i + 3] = 'o';
             Result[i + 4] = 's';
             Result[i + 5] = Symb[i + 3];
+            return Result;
+        }
+
+    }
+    public static char[] cos(char[] Symb, char[] Result , int i) {
+        iscos = true;
+        if(islog == true) {
+            if(isminus == true)
+                Result[i + 5] = '+';
+            else
+            Result[i + 5] = '-';
+            Result[i + 6] = 's';
+            Result[i + 7] = 'i';
+            Result[i + 8] = 'n';
+            Result[i + 9] = Symb[i + 3];
+            return Result;
+        }
+        else {
+            if(isminus == true)
+                Result[i + 2] = '+';
+            else
+            Result[i + 2] = '-';
+            Result[i + 3] = 's';
+            Result[i + 4] = 'i';
+            Result[i + 5] = 'n';
+            Result[i + 6] = Symb[i + 3];
             return Result;
         }
 

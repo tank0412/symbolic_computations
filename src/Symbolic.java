@@ -3,6 +3,7 @@ class Symbolic {
     private static boolean ispow = false;
     private static boolean hasSymbol = false;
     private static boolean islog = false;
+    private static boolean isln = false;
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter  an expression");
@@ -35,9 +36,14 @@ class Symbolic {
              Result = log(Symb,Result,i);
              continue;
          }
+         if (Symb[i] == 'l' && Symb[i + 1] == 'n' && Symb[i + 2] == 'x') {
+             //for ln
+             Result = ln(Symb,Result,i);
+             continue;
+         }
          // is -
          if (Symb[i] == '-') {
-             if (ispow == true) {
+             if (ispow == true || isln == true) {
                  Result[i + 2] = '-';
                  hasSymbol = true;
              } else {
@@ -52,7 +58,7 @@ class Symbolic {
          }
          //is +
          if (Symb[i] == '+') {
-             if (ispow == true) {
+             if (ispow == true|| isln == true) {
                  Result[i + 2] = '+';
                  hasSymbol = true;
              } else {
@@ -98,7 +104,7 @@ class Symbolic {
         }
     }
     public static char[] epsilon(char[] Symb, char[] Result , int i) {
-        if (ispow == true) {
+        if (ispow == true || isln == true) {
             Result[i+2] = 'e';
             Result[i + 3] = '^';
             Result[i + 4] = 'x';
@@ -129,6 +135,29 @@ class Symbolic {
         Result[i + 7] = 'n';
         Result[i + 8] = Symb[i+3];
         Result[i + 9] = ')';
+        return Result;
+    }
+    private static char[] ln(char[] Symb, char[] Result , int i)  {
+        isln = true;
+        if(hasSymbol == true) {
+            Result[i+2] = '1';
+            Result[i + 3] = '/';
+            Result[i + 4] = 'x';
+        }
+        else
+        {
+            if(islog == true) {
+                Result[i+5] = '1';
+                Result[i + 6] = '/';
+                Result[i + 7] = 'x';
+            }
+            else {
+                Result[i] = '1';
+                Result[i + 1] = '/';
+                Result[i + 2] = 'x';
+            }
+        }
+
         return Result;
     }
 }

@@ -118,6 +118,11 @@ class Symbolic {
              Result = sh(Symb, Result, i);
              continue;
          }
+         if (Symb[i] == 'c' && Symb[i + 1] == 'h' ) {
+             //for ch
+             Result = ch(Symb, Result, i);
+             continue;
+         }
          // is -
          if (Symb[i] == '-') {
              for(int j=0; j < Result.length; ++j) {
@@ -373,6 +378,19 @@ class Symbolic {
         for (int j = 0; j < Result.length; ++j) {
             if (Result[j] == 0) {
                 Result[j] = 'c';
+                Result[j+1] = 'h';
+                Result[j+2] = '(';
+                Result[j+3] = Symb[i + 3];
+                Result[j+4] = ')';
+                break;
+            }
+        }
+        return Result;
+    }
+    private static char[] ch(char[] Symb, char[] Result, int i) {
+        for (int j = 0; j < Result.length; ++j) {
+            if (Result[j] == 0) {
+                Result[j] = 's';
                 Result[j+1] = 'h';
                 Result[j+2] = '(';
                 Result[j+3] = Symb[i + 3];

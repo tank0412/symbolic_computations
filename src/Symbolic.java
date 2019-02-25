@@ -39,7 +39,16 @@ class Symbolic {
          }
          if (Symb[i] == 's' && Symb[i + 1] == 'i' && Symb[i + 2] == 'n') {
              //for sin
-             Result = sin(Symb, Result, i);
+             if(i-1 >=0){
+                 if(Symb[i-1] != 'c') {
+                     Result = sin(Symb, Result, i);
+                 }
+                 else
+                     continue;
+             }
+             else
+                 Result = sin(Symb, Result, i);
+             //for sin
              continue;
          }
          if (Symb[i] == 'c' && Symb[i + 1] == 'o' && Symb[i + 2] == 's') {
@@ -105,6 +114,11 @@ class Symbolic {
              }
 
              Result = ctg(Symb, Result, i);
+             continue;
+         }
+         if (Symb[i] == 'a' && Symb[i + 1] == 'r' && Symb[i + 2] == 'c'&& Symb[i + 3] == 's'&& Symb[i + 4] == 'i'&& Symb[i + 5] == 'n') {
+             //for arcsin
+             Result = arcsin(Symb, Result, i);
              continue;
          }
          // is -
@@ -263,6 +277,31 @@ class Symbolic {
                 Result[j+9] = Symb[i+4];
                 Result[j+10] = ')';
                 Result[j+11] = ')';
+                break;
+            }
+        }
+        return Result;
+    }
+    private static char[] arcsin(char[] Symb, char[] Result , int i) {
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                Result[j] = '1';
+                Result[j+1] = '/';
+                Result[j+2] = '(';
+                Result[j+3] = 's';
+                Result[j+4] = 'q';
+                Result[j+5] = 'r';
+                Result[j+6] = 't';
+                Result[j+7] = '(';
+                Result[j+8] = '1';
+                Result[j+9] = '-';
+                Result[j+10] = '(';
+                Result[j+11] = Symb[i+7];
+                Result[j+12] = ')';
+                Result[j+13] = '^';
+                Result[j+14] = '2';
+                Result[j+15] = ')';
+                Result[j+16] = ')';
                 break;
             }
         }

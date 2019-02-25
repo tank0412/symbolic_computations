@@ -56,24 +56,8 @@ class Symbolic {
              if(i-1 >=0 && Symb[i-1] == 'c'){
                  continue;
              }
-             for(int j=0; j < Result.length; ++j) {
-                 if(Result[j] == 0) {
-                     if(j-1 >=0) {
-                         if (Result[j - 1] == '+') {
-                             Result[j - 1] = '-';
-                             break;
-                         } else {
-                             Result[j - 1] = '+';
-                             break;
-                         }
-                     }
-                     else {
-                         Result[j] = '-';
-                         break;
-                     }
+             Result = CheckForMinus(Result);
 
-                 }
-                 }
              Result = cos(Symb, Result, i);
              continue;
          }
@@ -97,27 +81,12 @@ class Symbolic {
          }
          if (Symb[i] == 'c' && Symb[i + 1] == 't'&& Symb[i + 2] == 'g') {
              //for ctg
-             if((i-1) >=0 && Symb[i-1] == 'r' || Symb[i-1] == 'c') {
-                 continue;
-             }
-             for(int j=0; j < Result.length; ++j) {
-                 if(Result[j] == 0) {
-                     if(j-1 >=0 && Symb[i-1] != 'r' && Symb[i-1] != 'c' ) {
-                         if (Result[j - 1] == '+') {
-                             Result[j - 1] = '-';
-                             break;
-                         } else {
-                             Result[j - 1] = '+';
-                             break;
-                         }
-                     }
-                     else {
-                         Result[j] = '-';
-                         break;
-                     }
-
+             if((i-1) >=0) {
+                 if(Symb[i-1] == 'r' || Symb[i-1] == 'c') {
+                     continue;
                  }
              }
+             Result = CheckForMinus(Result);
 
              Result = ctg(Symb, Result, i);
              continue;
@@ -128,24 +97,7 @@ class Symbolic {
              continue;
          }
          if (Symb[i] == 'a' && Symb[i + 1] == 'r' && Symb[i + 2] == 'c'&& Symb[i + 3] == 'c'&& Symb[i + 4] == 'o'&& Symb[i + 5] == 's') {
-             for(int j=0; j < Result.length; ++j) {
-                 if(Result[j] == 0) {
-                     if(j-1 >=0) {
-                         if (Result[j - 1] == '+') {
-                             Result[j - 1] = '-';
-                             break;
-                         } else {
-                             Result[j - 1] = '+';
-                             break;
-                         }
-                     }
-                     else {
-                         Result[j] = '-';
-                         break;
-                     }
-
-                 }
-             }
+             Result = CheckForMinus(Result);
              //for arccos
              Result = arccos(Symb, Result, i);
              continue;
@@ -153,6 +105,12 @@ class Symbolic {
          if (Symb[i] == 'a' && Symb[i + 1] == 'r' && Symb[i + 2] == 'c'&& Symb[i + 3] == 't'&& Symb[i + 4] == 'g') {
              //for arctg
              Result = arctg(Symb, Result, i);
+             continue;
+         }
+         if (Symb[i] == 'a' && Symb[i + 1] == 'r' && Symb[i + 2] == 'c'&& Symb[i + 3] == 'c'&& Symb[i + 4] == 't'&& Symb[i + 5] == 'g') {
+             Result = CheckForMinus(Result);
+             //for arctg
+             Result = arcctg(Symb, Result, i);
              continue;
          }
          // is -
@@ -176,6 +134,28 @@ class Symbolic {
      }
         ResultS = String.valueOf(Result);
      return ResultS;
+    }
+
+    public static char[] CheckForMinus(char[] Result) {
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                if(j-1 >=0) {
+                    if (Result[j - 1] == '+') {
+                        Result[j - 1] = '-';
+                        break;
+                    } else {
+                        Result[j - 1] = '+';
+                        break;
+                    }
+                }
+                else {
+                    Result[j] = '-';
+                    break;
+                }
+
+            }
+        }
+        return Result;
     }
 
     public static char[] pow(char[] Symb, char[] Result , int i){
@@ -345,7 +325,7 @@ class Symbolic {
         Result = arcsin(Symb,Result,i);
         return Result;
     }
-    private static char[] arctg(char[] Symb, char[] Result , int i) {
+    private static char[] arctg(char[] Symb, char[] Result, int i) {
         for (int j = 0; j < Result.length; ++j) {
             if (Result[j] == 0) {
                 Result[j] = '1';
@@ -355,6 +335,25 @@ class Symbolic {
                 Result[j + 4] = '+';
                 Result[j + 5] = '(';
                 Result[j + 6] = Symb[i + 6];
+                Result[j + 7] = ')';
+                Result[j + 8] = '^';
+                Result[j + 9] = '2';
+                Result[j + 10] = ')';
+                break;
+            }
+        }
+        return Result;
+    }
+    private static char[] arcctg(char[] Symb, char[] Result, int i) {
+        for (int j = 0; j < Result.length; ++j) {
+            if (Result[j] == 0) {
+                Result[j] = '1';
+                Result[j + 1] = '/';
+                Result[j + 2] = '(';
+                Result[j + 3] = '1';
+                Result[j + 4] = '+';
+                Result[j + 5] = '(';
+                Result[j + 6] = Symb[i + 7];
                 Result[j + 7] = ')';
                 Result[j + 8] = '^';
                 Result[j + 9] = '2';

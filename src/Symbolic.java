@@ -97,9 +97,12 @@ class Symbolic {
          }
          if (Symb[i] == 'c' && Symb[i + 1] == 't'&& Symb[i + 2] == 'g') {
              //for ctg
+             if((i-1) >=0 && Symb[i-1] == 'r' || Symb[i-1] == 'c') {
+                 continue;
+             }
              for(int j=0; j < Result.length; ++j) {
                  if(Result[j] == 0) {
-                     if(j-1 >=0) {
+                     if(j-1 >=0 && Symb[i-1] != 'r' && Symb[i-1] != 'c' ) {
                          if (Result[j - 1] == '+') {
                              Result[j - 1] = '-';
                              break;
@@ -145,6 +148,11 @@ class Symbolic {
              }
              //for arccos
              Result = arccos(Symb, Result, i);
+             continue;
+         }
+         if (Symb[i] == 'a' && Symb[i + 1] == 'r' && Symb[i + 2] == 'c'&& Symb[i + 3] == 't'&& Symb[i + 4] == 'g') {
+             //for arctg
+             Result = arctg(Symb, Result, i);
              continue;
          }
          // is -
@@ -335,6 +343,25 @@ class Symbolic {
     }
     private static char[] arccos(char[] Symb, char[] Result , int i) {
         Result = arcsin(Symb,Result,i);
+        return Result;
+    }
+    private static char[] arctg(char[] Symb, char[] Result , int i) {
+        for (int j = 0; j < Result.length; ++j) {
+            if (Result[j] == 0) {
+                Result[j] = '1';
+                Result[j + 1] = '/';
+                Result[j + 2] = '(';
+                Result[j + 3] = '1';
+                Result[j + 4] = '+';
+                Result[j + 5] = '(';
+                Result[j + 6] = Symb[i + 6];
+                Result[j + 7] = ')';
+                Result[j + 8] = '^';
+                Result[j + 9] = '2';
+                Result[j + 10] = ')';
+                break;
+            }
+        }
         return Result;
     }
 }

@@ -72,7 +72,39 @@ class Symbolic {
          }
          if (Symb[i] == 't' && Symb[i + 1] == 'g') {
              //for tg
-             Result = tg(Symb, Result, i);
+             if(i-1 >=0){
+                 if(Symb[i-1] != 'c') {
+                     Result = tg(Symb, Result, i);
+                 }
+                 else
+                     continue;
+             }
+             else
+                 Result = tg(Symb, Result, i);
+             continue;
+         }
+         if (Symb[i] == 'c' && Symb[i + 1] == 't'&& Symb[i + 2] == 'g') {
+             //for ctg
+             for(int j=0; j < Result.length; ++j) {
+                 if(Result[j] == 0) {
+                     if(j-1 >=0) {
+                         if (Result[j - 1] == '+') {
+                             Result[j - 1] = '-';
+                             break;
+                         } else {
+                             Result[j - 1] = '+';
+                             break;
+                         }
+                     }
+                     else {
+                         Result[j] = '-';
+                         break;
+                     }
+
+                 }
+             }
+
+             Result = ctg(Symb, Result, i);
              continue;
          }
          // is -
@@ -209,6 +241,26 @@ class Symbolic {
                 Result[j+7] = '2';
                 Result[j+8] = '(';
                 Result[j+9] = Symb[i+3];
+                Result[j+10] = ')';
+                Result[j+11] = ')';
+                break;
+            }
+        }
+        return Result;
+    }
+    private static char[] ctg(char[] Symb, char[] Result , int i) {
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                Result[j] = '1';
+                Result[j+1] = '/';
+                Result[j+2] = '(';
+                Result[j+3] = 's';
+                Result[j+4] = 'i';
+                Result[j+5] = 'n';
+                Result[j+6] = '^';
+                Result[j+7] = '2';
+                Result[j+8] = '(';
+                Result[j+9] = Symb[i+4];
                 Result[j+10] = ')';
                 Result[j+11] = ')';
                 break;

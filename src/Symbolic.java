@@ -53,6 +53,9 @@ class Symbolic {
          }
          if (Symb[i] == 'c' && Symb[i + 1] == 'o' && Symb[i + 2] == 's') {
              //for cos
+             if(i-1 >=0 && Symb[i-1] == 'c'){
+                 continue;
+             }
              for(int j=0; j < Result.length; ++j) {
                  if(Result[j] == 0) {
                      if(j-1 >=0) {
@@ -119,6 +122,29 @@ class Symbolic {
          if (Symb[i] == 'a' && Symb[i + 1] == 'r' && Symb[i + 2] == 'c'&& Symb[i + 3] == 's'&& Symb[i + 4] == 'i'&& Symb[i + 5] == 'n') {
              //for arcsin
              Result = arcsin(Symb, Result, i);
+             continue;
+         }
+         if (Symb[i] == 'a' && Symb[i + 1] == 'r' && Symb[i + 2] == 'c'&& Symb[i + 3] == 'c'&& Symb[i + 4] == 'o'&& Symb[i + 5] == 's') {
+             for(int j=0; j < Result.length; ++j) {
+                 if(Result[j] == 0) {
+                     if(j-1 >=0) {
+                         if (Result[j - 1] == '+') {
+                             Result[j - 1] = '-';
+                             break;
+                         } else {
+                             Result[j - 1] = '+';
+                             break;
+                         }
+                     }
+                     else {
+                         Result[j] = '-';
+                         break;
+                     }
+
+                 }
+             }
+             //for arccos
+             Result = arccos(Symb, Result, i);
              continue;
          }
          // is -
@@ -305,6 +331,10 @@ class Symbolic {
                 break;
             }
         }
+        return Result;
+    }
+    private static char[] arccos(char[] Symb, char[] Result , int i) {
+        Result = arcsin(Symb,Result,i);
         return Result;
     }
 }

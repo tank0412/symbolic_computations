@@ -1,12 +1,5 @@
 import java.util.Scanner;
 class Symbolic {
-    private static boolean ispow = false;
-    private static boolean hasSymbol = false;
-    private static boolean islog = false;
-    private static boolean isln = false;
-    private static boolean issin = false;
-    private static boolean iscos = false;
-    private static boolean isminus = false;
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter  an expression");
@@ -51,41 +44,47 @@ class Symbolic {
          }
          if (Symb[i] == 'c' && Symb[i + 1] == 'o' && Symb[i + 2] == 's') {
              //for cos
+             for(int j=0; j < Result.length; ++j) {
+                 if(Result[j] == 0) {
+                     if(j-1 >=0) {
+                         if (Result[j - 1] == '+') {
+                             Result[j - 1] = '-';
+                             break;
+                         } else {
+                             Result[j - 1] = '+';
+                             break;
+                         }
+                     }
+                     else {
+                         Result[j] = '-';
+                         break;
+                     }
+
+                 }
+                 }
              Result = cos(Symb, Result, i);
+             continue;
+         }
+         if (Symb[i] == 's' && Symb[i + 1] == 'q' && Symb[i + 2] == 'r'&& Symb[i + 3] == 't') {
+             //for sqrt
+             Result = sqrt(Symb, Result, i);
              continue;
          }
          // is -
          if (Symb[i] == '-') {
-             if (!(Symb[i+1] == 'c' && Symb[i + 2] == 'o' && Symb[i + 3] == 's')) {
-                 if (ispow == true || isln == true || issin == true) {
-                     Result[i + 2] = '-';
-                     hasSymbol = true;
-                 } else {
-                     if (islog == true) {
-                         Result[i + 5] = '-';
-                     } else {
-                         Result[i + 1] = '-';
-                         hasSymbol = true;
-                     }
+             for(int j=0; j < Result.length; ++j) {
+                 if(Result[j] == 0) {
+                     Result[j] = '-';
+                     break;
                  }
-             }
-             else{
-                isminus = true;
              }
          }
          //is +
          if (Symb[i] == '+') {
-             if (!(Symb[i+1] == 'c' && Symb[i + 2] == 'o' && Symb[i + 3] == 's')) {
-                 if (ispow == true || isln == true || issin == true) {
-                     Result[i + 2] = '+';
-                     hasSymbol = true;
-                 } else {
-                     if (islog == true) {
-                         Result[i + 5] = '+';
-                     } else {
-                         Result[i + 1] = '+';
-                         hasSymbol = true;
-                     }
+             for(int j=0; j < Result.length; ++j) {
+                 if(Result[j] == 0) {
+                         Result[j] = '+';
+                     break;
                  }
              }
          }
@@ -95,131 +94,101 @@ class Symbolic {
     }
 
     public static char[] pow(char[] Symb, char[] Result , int i){
-        ispow = true;
-        if(islog == true) {
-            Result[i +5] = Symb[i + 2];
-            Result[i + 6] = Symb[i];
-            Result[i + 7] = Symb[i + 1];
-            int digit = (Character.getNumericValue(Symb[i + 2])) - 1;
-            Result[i + 8] = (char) (digit + '0');
-            return Result;
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                Result[j] = Symb[i + 2];
+                Result[j + 1] = Symb[i];
+                Result[j + 2] = Symb[i + 1];
+                int digit = (Character.getNumericValue(Symb[i + 2])) - 1;
+                Result[j + 3] = (char) (digit + '0');
+                break;
+            }
         }
-        if(hasSymbol == false) {
-            Result[i] = Symb[i + 2];
-            Result[i + 1] = Symb[i];
-            Result[i + 2] = Symb[i + 1];
-            int digit = (Character.getNumericValue(Symb[i + 2])) - 1;
-            Result[i + 3] = (char) (digit + '0');
-            return Result;
+                return Result;
+
         }
-        else{
-            Result[i+2] = Symb[i + 2];
-            Result[i + 3] = Symb[i];
-            Result[i + 4] = Symb[i + 1];
-            int digit = (Character.getNumericValue(Symb[i + 2])) - 1;
-            Result[i + 5] = (char) (digit + '0');
-            return Result;
-        }
-    }
     public static char[] epsilon(char[] Symb, char[] Result , int i) {
-        if (ispow == true || isln == true || issin == true) {
-            Result[i+2] = 'e';
-            Result[i + 3] = '^';
-            Result[i + 4] = 'x';
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                Result[j] = 'e';
+                Result[j + 1] = '^';
+                Result[j + 2] = 'x';
+                break;
+            }
+        }
             return Result;
-        }
-        else {
-            if(islog == true) {
-                Result[i + 5] = Symb[i];
-                Result[i + 6] = Symb[i + 1];
-                Result[i +7] = Symb[i + 2];
-                return Result;
-            }
-            else {
-                Result[i + 1] = 'e';
-                Result[i + 2] = '^';
-                Result[i + 3] = 'x';
-                return Result;
-            }
-        }
     }
     private static char[] log(char[] Symb, char[] Result , int i) {
-        islog = true;
-        Result[i+2] = '1';
-        Result[i + 3] = '/';
-        Result[i + 4] = '(';
-        Result[i + 5] = Symb[i+4];
-        Result[i + 6] = 'l';
-        Result[i + 7] = 'n';
-        Result[i + 8] = Symb[i+3];
-        Result[i + 9] = ')';
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                Result[j] = '1';
+                Result[j+1] = '/';
+                Result[j+2] = '(';
+                Result[j+3] = Symb[i+4];
+                Result[j+4] = 'l';
+                Result[j+5] = 'n';
+                Result[j+6] = Symb[i+3];
+                Result[j+7] = ')';
+                break;
+            }
+        }
         return Result;
     }
     private static char[] ln(char[] Symb, char[] Result , int i)  {
-        isln = true;
-        if(hasSymbol == true) {
-            Result[i+2] = '1';
-            Result[i + 3] = '/';
-            Result[i + 4] = 'x';
-        }
-        else
-        {
-            if(islog == true) {
-                Result[i+5] = '1';
-                Result[i + 6] = '/';
-                Result[i + 7] = 'x';
-            }
-            else {
-                Result[i] = '1';
-                Result[i + 1] = '/';
-                Result[i + 2] = 'x';
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                Result[j] = '1';
+                Result[j+1] = '/';
+                Result[j+2] = 'x';
+                break;
             }
         }
 
         return Result;
     }
     public static char[] sin(char[] Symb, char[] Result , int i) {
-            issin = true;
-        if(islog == true) {
-            Result[i + 5] = 'c';
-            Result[i + 6] = 'o';
-            Result[i + 7] = 's';
-            Result[i + 8] = Symb[i + 3];
-            return Result;
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                Result[j] = 'c';
+                Result[j+1] = 'o';
+                Result[j+2] = 's';
+                Result[j+3] = Symb[i + 3];
+                break;
+            }
         }
-        else {
-            Result[i + 2] = 'c';
-            Result[i + 3] = 'o';
-            Result[i + 4] = 's';
-            Result[i + 5] = Symb[i + 3];
-            return Result;
-        }
-
+        return Result;
     }
     public static char[] cos(char[] Symb, char[] Result , int i) {
-        iscos = true;
-        if(islog == true) {
-            if(isminus == true)
-                Result[i + 5] = '+';
-            else
-            Result[i + 5] = '-';
-            Result[i + 6] = 's';
-            Result[i + 7] = 'i';
-            Result[i + 8] = 'n';
-            Result[i + 9] = Symb[i + 3];
-            return Result;
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                Result[j] = 's';
+                Result[j + 1] = 'i';
+                Result[j + 2] = 'n';
+                Result[j + 3] = Symb[i + 3];
+                break;
+            }
         }
-        else {
-            if(isminus == true)
-                Result[i + 2] = '+';
-            else
-            Result[i + 2] = '-';
-            Result[i + 3] = 's';
-            Result[i + 4] = 'i';
-            Result[i + 5] = 'n';
-            Result[i + 6] = Symb[i + 3];
             return Result;
         }
 
-    }
+    public static char[] sqrt(char[] Symb, char[] Result , int i) {
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                Result[j] = '1';
+                Result[j+1] = '/';
+                Result[j+2] = '(';
+                Result[j+3] = '2';
+                Result[j+4] = 's';
+                Result[j+5] = 'q';
+                Result[j+6] = 'r';
+                Result[j+7] = 't';
+                Result[j+8] = '(';
+                Result[j+9] = Symb[i + 5];
+                Result[j+10] = ')';
+                Result[j+11] = ')';
+                break;
+            }
+        }
+            return Result;
+        }
 }

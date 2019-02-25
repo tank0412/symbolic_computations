@@ -70,6 +70,11 @@ class Symbolic {
              Result = sqrt(Symb, Result, i);
              continue;
          }
+         if (Symb[i] == 't' && Symb[i + 1] == 'g') {
+             //for tg
+             Result = tg(Symb, Result, i);
+             continue;
+         }
          // is -
          if (Symb[i] == '-') {
              for(int j=0; j < Result.length; ++j) {
@@ -191,4 +196,24 @@ class Symbolic {
         }
             return Result;
         }
+    private static char[] tg(char[] Symb, char[] Result , int i) {
+        for(int j=0; j < Result.length; ++j) {
+            if(Result[j] == 0) {
+                Result[j] = '1';
+                Result[j+1] = '/';
+                Result[j+2] = '(';
+                Result[j+3] = 'c';
+                Result[j+4] = 'o';
+                Result[j+5] = 's';
+                Result[j+6] = '^';
+                Result[j+7] = '2';
+                Result[j+8] = '(';
+                Result[j+9] = Symb[i+3];
+                Result[j+10] = ')';
+                Result[j+11] = ')';
+                break;
+            }
+        }
+        return Result;
+    }
 }

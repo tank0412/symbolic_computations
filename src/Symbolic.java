@@ -175,6 +175,14 @@ class Symbolic {
              if(trigger == true) readypop = true;
              continue;
          }
+         if (Symb[i] == 'x' && (Symb[i + 1] == '+' || Symb[i + 1] == '-' )  && Character.isDigit(Symb[i + 2])) {
+             for(int j=0; j < Result.length; ++j) {
+                 if(Result[j] == 0) {
+                     Result[j] = '1';
+                     break;
+                 }
+             }
+         }
          // is -
          if (Symb[i] == '-' && trigger == false) {
              /*

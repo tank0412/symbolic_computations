@@ -1,12 +1,15 @@
-import java.util.Scanner;
-
 class Symbolic {
     public static void main(String[] args) {
-        Scanner reader = new Scanner(System.in);
-        System.out.println("Enter  an expression");
-        char[] Symb = new char[100];
-        String expr = reader.nextLine();
-        System.out.println(expr);
+        char[] text = new char[100];
+        char[] symb = new char[100];
+        char[] derivated = new char[100];
+        Parse parse = new Parse();
+        text = parse.getInput();
+        Import import_mine = new Import();
+        symb = import_mine.convertToAsciiMath(text);
+        Transform transform = new Transform();
+        derivated = transform.derivate(symb);
+        System.out.println(derivated);
         return;
 
     }

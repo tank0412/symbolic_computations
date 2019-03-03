@@ -31,7 +31,7 @@ public class Transform {
                     for(int j = 0; j < derivresult.length; ++ j) {
                         if(derivresult[j] == 0) {
                             derivresult[j] = '+';
-                            saveresult = Combine(saveresult, derivresult);
+                            saveresult = Combine(saveresult, derivresult,true);
                             isSymbol = true;
                             break;
                         }
@@ -41,7 +41,7 @@ public class Transform {
                 for(int j = 0; j < derivresult.length; ++ j) {
                     if(derivresult[j] == 0) {
                         derivresult[j] = '-';
-                        saveresult = Combine(saveresult, derivresult);
+                        saveresult = Combine(saveresult, derivresult,true);
                         isSymbol = true;
                         break;
                     }
@@ -50,17 +50,7 @@ public class Transform {
         }
         if(isSymbol == true && saveresult != derivresult && hardDerivative != true ) {
             isSymbol= false;
-            for(int i = 0; i < saveresult.length; ++i){
-                if(saveresult[i] == 0 && saveresult[i-1] == '+' && derivresult[0] == '-') {
-                    saveresult[i-1] = '-';
-                    break;
-                }
-                if(saveresult[i] == 0 && derivresult[0] == '-' ) {
-                    saveresult[i-1] ='+';
-                    break;
-                }
-            }
-            return Combine(saveresult, derivresult);
+            return Combine(saveresult, derivresult,true);
         }
         else {
             return derivresult;
@@ -141,7 +131,8 @@ public class Transform {
             backupcharptr = charptr;
             charptr = 0;
             hardDerivative = true;
-            derivArgument = derivate(argument);
+            Transform transform = new Transform();
+            derivArgument = transform.derivate(argument);
             charptr = backupcharptr;
             hardDerivative = false;
             int c;
@@ -202,13 +193,15 @@ public class Transform {
         return result;
 
     }
-    public char[] Combine (char[] first, char[] second) {
+    public char[] Combine (char[] first, char[] second, boolean saveminus) {
         char[] combinedresult = new char[100];
         int secondindex = 0;
         for(int i = 0; ; ++ i) {
-            if(second[secondindex] == 0) break;
+            if(second[secondindex] == 0) {
+                return CheckCombine(first);
+            }
             if(first[i] == 0) {
-                    if(second[secondindex] == '-') {
+                    if(second[secondindex] == '-' && saveminus == false) {
                         secondindex++;
                         i--;
                         continue;
@@ -217,7 +210,25 @@ public class Transform {
                     secondindex++;
             }
         }
-        return first;
     }
 
+public char[] CheckCombine(char[] Combined) {
+    for(int m = 0; m < Combined.length; ++m) {
+        if(Combined[m] == '+' && Combined[m+1] == '(' && Combined[m+2] == '-'  ){
+            Combined[m] = '-';
+            for(int n = m+2; n <Combined.length; ++n){
+                if(Combined[n] == 0) break;
+                Combined[n] = Combined[n+1];
+            }
+        }
+        if(Combined[m] == '-' && Combined[m+1] == '(' && Combined[m+2] == '-'  ){
+            Combined[m] = '+';
+            for(int n = m+2; n <Combined.length; ++n){
+                if(Combined[n] == 0) break;
+                Combined[n] = Combined[n+1];
+            }
+        }
+    }
+    return Combined;
+}
 }

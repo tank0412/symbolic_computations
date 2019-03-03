@@ -33,6 +33,9 @@ public class Transform {
             if(symb[charptr] == 'c' && symb[charptr + 1] == 't'&& symb[charptr + 2] == 'g') { //ctg
                 derivresult =  ctg(symb,charptr+3);
             }
+            if(symb[charptr] == 's' && symb[charptr + 1] == 'q'&& symb[charptr + 2] == 'r'&& symb[charptr + 3] == 't') { //sqrt
+                derivresult =  sqrt(symb,charptr+4);
+            }
             if(symb[charptr] == '+') {
                     for(int j = 0; j < derivresult.length; ++ j) {
                         if(derivresult[j] == 0) {
@@ -108,7 +111,7 @@ public class Transform {
             int index = 0, z = 0, backupcharptr=0;
             for (z = i - 2; ; z--) {
                 if(z-1 >= 0) {
-                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g') {
+                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't')) {
                         index++;
                     } else {
                         break;
@@ -122,7 +125,7 @@ public class Transform {
             index = index - 1;
             for (z = i - 2; ; z--) {
                 if(z-1 >= 0) {
-                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g') {
+                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't')) {
                         argument[index] = symb[z];
                         index--;
                     } else {
@@ -269,7 +272,7 @@ public class Transform {
         char[] argument = new char[100];
         char[] derivArgument = new char[100];
         int index = 0, z = 0;
-        //get tg argument;
+        //get ctg argument;
         for (z = i + 1; ; z++) {
             if (symb[z] != ')') {
                 argument[index] = symb[z];
@@ -310,7 +313,51 @@ public class Transform {
         return result;
 
     }
+    public char[] sqrt(char[] symb, int i) {
+        char[] result = new char[100];
+        char[] argument = new char[100];
+        char[] derivArgument = new char[100];
+        int index = 0, z = 0;
+        //get sqrt argument;
+        for (z = i + 1; ; z++) {
+            if (symb[z] != ')') {
+                argument[index] = symb[z];
+                index++;
+            } else {
+                break;
+            }
 
+        }
+        hardDerivative = true;
+        charptr = 0;
+        derivArgument = derivate(argument);
+        charptr = z;
+        hardDerivative = false;
+        int c;
+        for (z = 0; ; ++z) {
+            if (result[z] == 0) {
+                result[z] = '1';
+                result[z+1] = '/';
+                result[z+2] = '(';
+                result[z + 3] = '2';
+                result[z + 4] = 's';
+                result[z + 5] = 'q';
+                result[z + 6] = 'r';
+                result[z + 7] = 't';
+                result[z + 8] = '(';
+                break;
+            }
+        }
+        index = 0;
+        for (c = z + 9; c < derivArgument.length; ++c, ++index) {
+            if (derivArgument[index] == 0) break;
+            result[c] = derivArgument[index];
+        }
+        result[c] = ')';
+        result[c+1] = ')';
+        return result;
+
+    }
 public char[] CheckCombine(char[] Combined) {
     for(int m = 0; m < Combined.length; ++m) {
         if(Combined[m] == '+' && Character.isDigit(Combined[m+1]) && Combined[m+2] == '(' && Combined[m+3] == '-'  ){

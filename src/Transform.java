@@ -141,21 +141,23 @@ public class Transform {
             derivArgument = transform.derivate(argument);
             charptr = backupcharptr;
             hardDerivative = false;
+            int digit = Character.getNumericValue(symb[i + 1]);
             int c;
             for (z = 0; ; ++z) {
                 if (result[z] == 0) {
-                    result[z] = '(';
+                    result[z] = (char)( digit + '0');
+                    result[z+1] = '(';
                     break;
                 }
             }
             index = 0;
-            for (c = z + 1; c < derivArgument.length; ++c, ++index) {
+            for (c = z + 2; c < derivArgument.length; ++c, ++index) {
                 if (derivArgument[index] == 0) break;
                 result[c] = derivArgument[index];
             }
             result[c] = ')';
             result[c+1] = '^';
-            int digit = Character.getNumericValue(symb[i + 1]) - 1;
+            digit -=1;
             result[c+2] = (char)( digit + '0');
             return result;
         }

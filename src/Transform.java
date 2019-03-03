@@ -36,8 +36,11 @@ public class Transform {
             if(symb[charptr] == 's' && symb[charptr + 1] == 'q'&& symb[charptr + 2] == 'r'&& symb[charptr + 3] == 't') { //sqrt
                 derivresult =  sqrt(symb,charptr+4);
             }
-            if(symb[charptr] == 'l' && symb[charptr + 1] == 'n') { //sqrt
+            if(symb[charptr] == 'l' && symb[charptr + 1] == 'n') { //ln
                 derivresult =  ln(symb,charptr+2);
+            }
+            if(symb[charptr] == 'e' && symb[charptr + 1] == '^') { //epsilon
+                derivresult =  eps(symb,charptr+2);
             }
             if(symb[charptr] == '+') {
                     for(int j = 0; j < derivresult.length; ++ j) {
@@ -114,7 +117,7 @@ public class Transform {
             int index = 0, z = 0, backupcharptr=0;
             for (z = i - 2; ; z--) {
                 if(z-1 >= 0) {
-                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't')) {
+                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^'))) {
                         index++;
                     } else {
                         break;
@@ -128,7 +131,7 @@ public class Transform {
             index = index - 1;
             for (z = i - 2; ; z--) {
                 if(z-1 >= 0) {
-                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't')) {
+                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^'))) {
                         argument[index] = symb[z];
                         index--;
                     } else {
@@ -386,6 +389,44 @@ public class Transform {
             if (result[z] == 0) {
                 result[z] = '1';
                 result[z+1] = '/';
+                result[z+2] = '(';
+                break;
+            }
+        }
+        index = 0;
+        for (c = z + 3; c < derivArgument.length; ++c, ++index) {
+            if (derivArgument[index] == 0) break;
+            result[c] = derivArgument[index];
+        }
+        result[c] = ')';
+        return result;
+
+    }
+    public char[] eps(char[] symb, int i) {
+        char[] result = new char[100];
+        char[] argument = new char[100];
+        char[] derivArgument = new char[100];
+        int index = 0, z = 0;
+        //get sqrt argument;
+        for (z = i + 1; ; z++) {
+            if (symb[z] != ')') {
+                argument[index] = symb[z];
+                index++;
+            } else {
+                break;
+            }
+
+        }
+        hardDerivative = true;
+        charptr = 0;
+        derivArgument = derivate(argument);
+        charptr = z;
+        hardDerivative = false;
+        int c;
+        for (z = 0; ; ++z) {
+            if (result[z] == 0) {
+                result[z] = 'e';
+                result[z+1] = '^';
                 result[z+2] = '(';
                 break;
             }

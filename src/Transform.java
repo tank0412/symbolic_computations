@@ -30,6 +30,9 @@ public class Transform {
             if(symb[charptr] == 't' && symb[charptr + 1] == 'g') { //tg
                 derivresult =  tg(symb,charptr+2);
             }
+            if(symb[charptr] == 'c' && symb[charptr + 1] == 't'&& symb[charptr + 2] == 'g') { //ctg
+                derivresult =  ctg(symb,charptr+3);
+            }
             if(symb[charptr] == '+') {
                     for(int j = 0; j < derivresult.length; ++ j) {
                         if(derivresult[j] == 0) {
@@ -251,6 +254,52 @@ public class Transform {
         }
         index = 0;
         for (c = z + 9; c < derivArgument.length; ++c, ++index) {
+            if (derivArgument[index] == 0) break;
+            result[c] = derivArgument[index];
+        }
+        result[c] = ')';
+        result[c+1] = ')';
+        return result;
+
+    }
+    public char[] ctg(char[] symb, int i) {
+        char[] result = new char[100];
+        char[] argument = new char[100];
+        char[] derivArgument = new char[100];
+        int index = 0, z = 0;
+        //get tg argument;
+        for (z = i + 1; ; z++) {
+            if (symb[z] != ')') {
+                argument[index] = symb[z];
+                index++;
+            } else {
+                break;
+            }
+
+        }
+        hardDerivative = true;
+        charptr = 0;
+        derivArgument = derivate(argument);
+        charptr = z;
+        hardDerivative = false;
+        int c;
+        for (z = 0; ; ++z) {
+            if (result[z] == 0) {
+                result[z] = '-';
+                result[z+1] = '1';
+                result[z+2] = '/';
+                result[z + 3] = '(';
+                result[z + 4] = 's';
+                result[z + 5] = 'i';
+                result[z + 6] = 'n';
+                result[z + 7] = '^';
+                result[z + 8] = '2';
+                result[z + 9] = '(';
+                break;
+            }
+        }
+        index = 0;
+        for (c = z + 10; c < derivArgument.length; ++c, ++index) {
             if (derivArgument[index] == 0) break;
             result[c] = derivArgument[index];
         }

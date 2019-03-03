@@ -36,6 +36,9 @@ public class Transform {
             if(symb[charptr] == 's' && symb[charptr + 1] == 'q'&& symb[charptr + 2] == 'r'&& symb[charptr + 3] == 't') { //sqrt
                 derivresult =  sqrt(symb,charptr+4);
             }
+            if(symb[charptr] == 'l' && symb[charptr + 1] == 'n') { //sqrt
+                derivresult =  ln(symb,charptr+2);
+            }
             if(symb[charptr] == '+') {
                     for(int j = 0; j < derivresult.length; ++ j) {
                         if(derivresult[j] == 0) {
@@ -355,6 +358,44 @@ public class Transform {
         }
         result[c] = ')';
         result[c+1] = ')';
+        return result;
+
+    }
+    public char[] ln(char[] symb, int i) {
+        char[] result = new char[100];
+        char[] argument = new char[100];
+        char[] derivArgument = new char[100];
+        int index = 0, z = 0;
+        //get sqrt argument;
+        for (z = i + 1; ; z++) {
+            if (symb[z] != ')') {
+                argument[index] = symb[z];
+                index++;
+            } else {
+                break;
+            }
+
+        }
+        hardDerivative = true;
+        charptr = 0;
+        derivArgument = derivate(argument);
+        charptr = z;
+        hardDerivative = false;
+        int c;
+        for (z = 0; ; ++z) {
+            if (result[z] == 0) {
+                result[z] = '1';
+                result[z+1] = '/';
+                result[z+2] = '(';
+                break;
+            }
+        }
+        index = 0;
+        for (c = z + 3; c < derivArgument.length; ++c, ++index) {
+            if (derivArgument[index] == 0) break;
+            result[c] = derivArgument[index];
+        }
+        result[c] = ')';
         return result;
 
     }

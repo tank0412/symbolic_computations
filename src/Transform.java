@@ -313,29 +313,43 @@ public class Transform {
 
 public char[] CheckCombine(char[] Combined) {
     for(int m = 0; m < Combined.length; ++m) {
-        if(Combined[m] == '+' && Combined[m+1] == '(' && Combined[m+2] == '-'  ){
+        if(Combined[m] == '+' && Character.isDigit(Combined[m+1]) && Combined[m+2] == '(' && Combined[m+3] == '-'  ){
             Combined[m] = '-';
-            for(int n = m+2; n <Combined.length; ++n){
+        for(int n = m+3; n <Combined.length; ++n){
+            if(Combined[n] == 0) break;
+            Combined[n] = Combined[n+1];
+        }
+    }
+    if(Combined[m] == '+' && Combined[m+1] == '-' && Combined[m+2] == '1' && Combined[m+3] == '/'&& (Combined[m+4] == '('&& (Combined[m+5] == 's')  )) {
+        Combined[m] = '-';
+        for(int n = m+1; n <Combined.length; ++n){
+            if(Combined[n] == 0) break;
+            Combined[n] = Combined[n+1];
+        }
+    }
+        if(Combined[m] == '-' && Character.isDigit(Combined[m+1]) && Combined[m+2] == '(' && Combined[m+3] == '-'  ){
+            Combined[m] = '+';
+            for(int n = m+3; n <Combined.length; ++n){
                 if(Combined[n] == 0) break;
                 Combined[n] = Combined[n+1];
             }
         }
-        if(Combined[m] == '+' && Combined[m+1] == '-' && Combined[m+2] == '1' && Combined[m+3] == '/'&& (Combined[m+4] == '('&& (Combined[m+5] == 's')  )) {
-            Combined[m] = '-';
+    if(Combined[m] == '-' && Combined[m+1] == '-' && Combined[m+2] == '1' && Combined[m+3] == '/'&& (Combined[m+4] == '('&& (Combined[m+5] == 's')  )) {
+        Combined[m] = '+';
+        for(int n = m+1; n <Combined.length; ++n){
+            if(Combined[n] == 0) break;
+            Combined[n] = Combined[n+1];
+        }
+    }
+        if(Combined[m] == '-' && Combined[m+1] == '-'  ){
+            Combined[m] = '+';
             for(int n = m+1; n <Combined.length; ++n){
                 if(Combined[n] == 0) break;
                 Combined[n] = Combined[n+1];
             }
         }
-        if(Combined[m] == '-' && Combined[m+1] == '(' && Combined[m+2] == '-'  ){
-            Combined[m] = '+';
-            for(int n = m+2; n <Combined.length; ++n){
-                if(Combined[n] == 0) break;
-                Combined[n] = Combined[n+1];
-            }
-        }
-        if(Combined[m] == '-' && Combined[m+1] == '-' && Combined[m+2] == '1' && Combined[m+3] == '/'&& (Combined[m+4] == '('&& (Combined[m+5] == 's')  )) {
-            Combined[m] = '+';
+        if((Combined[m] == '+' && Combined[m+1] == '-' )|| (Combined[m] == '-' && Combined[m+1] == '+' ) ){
+            Combined[m] = '-';
             for(int n = m+1; n <Combined.length; ++n){
                 if(Combined[n] == 0) break;
                 Combined[n] = Combined[n+1];

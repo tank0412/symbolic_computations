@@ -31,7 +31,7 @@ public class Transform {
                     for(int j = 0; j < derivresult.length; ++ j) {
                         if(derivresult[j] == 0) {
                             derivresult[j] = '+';
-                            saveresult = Arrays.copyOf(derivresult,derivresult.length);
+                            saveresult = Combine(saveresult, derivresult);
                             isSymbol = true;
                             break;
                         }
@@ -41,7 +41,7 @@ public class Transform {
                 for(int j = 0; j < derivresult.length; ++ j) {
                     if(derivresult[j] == 0) {
                         derivresult[j] = '-';
-                        saveresult = Arrays.copyOf(derivresult,derivresult.length);
+                        saveresult = Combine(saveresult, derivresult);
                         isSymbol = true;
                         break;
                     }

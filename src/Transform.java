@@ -59,6 +59,10 @@ public class Transform {
             if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 'c'&& symb[charptr + 4] == 't'&& symb[charptr + 5] == 'g') {//arcctg
                 derivresult =  arcctg(symb,charptr+6);
             }
+            if(symb[charptr] == 'l' && symb[charptr + 1] == 'o' && symb[charptr + 2] == 'g') { //log
+                derivresult =  log(symb,charptr+3);
+            }
+
             if(symb[charptr] == '+') {
                     for(int j = 0; j < derivresult.length; ++ j) {
                         if(derivresult[j] == 0) {
@@ -135,7 +139,7 @@ public class Transform {
             int index = 0, z = 0, backupcharptr=0;
             for (z = i - 2; ; z--) {
                 if(z-1 >= 0) {
-                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^'))) {
+                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^')||(symb[z - 5] == 'l'&& symb[z - 4] == 'o'&& symb[z - 3] == 'g'&& symb[z - 2] == '_'))) {
                         index++;
                     } else {
                         break;
@@ -149,7 +153,7 @@ public class Transform {
             index = index - 1;
             for (z = i - 2; ; z--) {
                 if(z-1 >= 0) {
-                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^'))) {
+                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^')||(symb[z - 5] == 'l'&& symb[z - 4] == 'o'&& symb[z - 3] == 'g'&& symb[z - 2] == '_'))) {//e^(x)
                         argument[index] = symb[z];
                         index--;
                     } else {
@@ -180,6 +184,10 @@ public class Transform {
             index = 0;
             for (c = z + 2; c < argument.length; ++c, ++index) {
                 if (argument[index] == 0) break;
+                if(argument[index] == '_') {
+                    c--;
+                    continue;
+                }
                 result[c] = argument[index];
             }
             result[c] = ')';
@@ -679,6 +687,52 @@ public class Transform {
         result[c+2] = '2';
         result[c+3] = ')';
         return result;
+    }
+    public char[] log(char[] symb, int i) {
+        char[] result = new char[100];
+        char[] argument = new char[100];
+        char[] derivArgument = new char[100];
+        int index = 0, z = 0;
+        //get log argument;
+        char aArgument = symb[i+1];
+        for (z = i + 2; ; z++) {
+            if (symb[z] != 0 && symb[z] != ')' ) {
+                argument[index] = symb[z];
+                index++;
+            } else {
+                break;
+            }
+
+        }
+        hardDerivative = true;
+        charptr = 0;
+        derivArgument = derivate(argument);
+        charptr = z;
+        hardDerivative = false;
+        int c;
+        for (z = 0; ; ++z) {
+            if (result[z] == 0) {
+                result[z] = '1';
+                result[z + 1] = '/';
+                result[z + 2] = '(';
+                result[z + 3] = '(';
+                break;
+            }
+        }
+        index = 0;
+        for (c = z + 4; c < derivArgument.length; ++c, ++index) {
+            if (derivArgument[index] == 0) break;
+            result[c] = derivArgument[index];
+        }
+        result[c] = ')';
+        result[c+1] = 'l';
+        result[c+2] = 'n';
+        result[c+3] = '(';
+        result[c+4] = aArgument;
+        result[c+5] = ')';
+        result[c+6] = ')';
+        return result;
+
     }
 
 public char[] CheckCombine(char[] Combined) {

@@ -5,7 +5,10 @@ public class Parse {
         System.out.println("Enter  an expression");
         Scanner reader = new Scanner(System.in);
         String expr = reader.nextLine();
-        //System.out.println(expr);
+        /*
+        Write write = new Write();
+        write.Write(expr.toCharArray());
+        */
         return expr.toCharArray();
     }
     }

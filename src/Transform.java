@@ -201,11 +201,13 @@ public class Transform {
                 c +=1;
             }
                 index = 0;
+            if(derivArgument[index] != '1') {
                 result[c] = '*';
                 c++;
                 for (; c < derivArgument.length; ++c, ++index) {
                     if (derivArgument[index] == 0) break;
                     result[c] = derivArgument[index];
+                }
                 }
             int add = 1;
             char[] copyresult = new char[100];

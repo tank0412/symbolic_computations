@@ -15,7 +15,12 @@ public class Transform {
             if(symb[charptr] == 'x' ) { //x only
                 for(int j = 0; j < derivresult.length; ++ j) {
                     if(derivresult[j] == 0) {
-                        derivresult[j] = 'x';
+                        if(hardDerivative == true){
+                            derivresult[j] = 'x';
+                        }
+                        else {
+                            derivresult[j] = '1';
+                        }
                         break;
                     }
                 }
@@ -160,14 +165,49 @@ public class Transform {
                 }
             }
             index = 0;
-            for (c = z + 2; c < derivArgument.length; ++c, ++index) {
-                if (derivArgument[index] == 0) break;
-                result[c] = derivArgument[index];
+            for (c = z + 2; c < argument.length; ++c, ++index) {
+                if (argument[index] == 0) break;
+                result[c] = argument[index];
             }
             result[c] = ')';
             result[c+1] = '^';
             digit -=1;
             result[c+2] = (char)( digit + '0');
+            index = 0;
+            c+=3;
+            result[c] = '*';
+            c++;
+            for ( ; c < derivArgument.length; ++c, ++index) {
+                if (derivArgument[index] == 0) break;
+                result[c] = derivArgument[index];
+            }
+            int add = 1;
+            char[] copyresult = new char[100];
+            for(int k = 0; k <=result.length; ++k){
+                if(result[k] == '-'){
+                    result[k]=' ';
+                    copyresult=Arrays.copyOf(result, result.length);;
+                    result[1] = result[0];
+
+                    for(int x = 2; x < result.length; ++x){
+                        if(result[x] == 0) {
+                            result[0]='-';
+                            break;
+                        }
+                        if(copyresult[x - add] == ' ') {
+                            add--;
+                            result[x] = copyresult[x -add];
+                        }
+                        else {
+                            result[x] = copyresult[x - add];
+                        }
+
+                    }
+                }
+                if(result[k] == 0){
+                  break;
+                }
+            }
             return result;
         }
     public char[] cos(char[] symb, int i) {

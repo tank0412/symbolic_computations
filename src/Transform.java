@@ -47,6 +47,9 @@ public class Transform {
             if(symb[charptr] == 'e' && symb[charptr + 1] == '^') { //epsilon
                 derivresult =  eps(symb,charptr+2);
             }
+            if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 's'&& symb[charptr + 4] == 'i'&& symb[charptr + 5] == 'n') {//arcsin
+                derivresult =  arcsin(symb,charptr+6);
+            }
             if(symb[charptr] == '+') {
                     for(int j = 0; j < derivresult.length; ++ j) {
                         if(derivresult[j] == 0) {
@@ -76,6 +79,7 @@ public class Transform {
             return derivresult;
         }
     }
+
     public char[] sin(char[] symb, int i) {
         char[] result = new char[100];
         char[] argument = new char[100];
@@ -184,7 +188,7 @@ public class Transform {
             int add = 1;
             char[] copyresult = new char[100];
             for(int k = 0; k <=result.length; ++k){
-                if(result[k] == '-'){
+                if(result[k] == '-' && (result[k-4] != 'r' && result[k-3] != 't' )){
                     result[k]=' ';
                     copyresult=Arrays.copyOf(result, result.length);;
                     result[1] = result[0];
@@ -480,6 +484,57 @@ public class Transform {
         return result;
 
     }
+
+    private char[] arcsin(char[] symb, int i) {
+        char[] result = new char[100];
+        char[] argument = new char[100];
+        char[] derivArgument = new char[100];
+        int index = 0, z = 0;
+        //get arcsin argument;
+        for (z = i + 1; ; z++) {
+            if (symb[z] != ')') {
+                argument[index] = symb[z];
+                index++;
+            } else {
+                break;
+            }
+
+        }
+        hardDerivative = true;
+        charptr = 0;
+        derivArgument = derivate(argument);
+        charptr = z;
+        hardDerivative = false;
+        int c;
+        for (z = 0; ; ++z) {
+            if (result[z] == 0) {
+                result[z] = '1';
+                result[z+1] = '/';
+                result[z+2] = '(';
+                result[z + 3] = 's';
+                result[z + 4] = 'q';
+                result[z + 5] = 'r';
+                result[z + 6] = 't';
+                result[z + 7] = '(';
+                result[z + 8] = '1';
+                result[z + 9] = '-';
+                result[z + 10] = '(';
+                break;
+            }
+        }
+        index = 0;
+        for (c = z + 11; c < derivArgument.length; ++c, ++index) {
+            if (derivArgument[index] == 0) break;
+            result[c] = derivArgument[index];
+        }
+        result[c] = ')';
+        result[c+1] = '^';
+        result[c+2] = '2';
+        result[c+3] = ')';
+        result[c+4] = ')';
+        return result;
+    }
+
 public char[] CheckCombine(char[] Combined) {
     for(int m = 0; m < Combined.length; ++m) {
         if(Combined[m] == '+' && Character.isDigit(Combined[m+1]) && Combined[m+2] == '(' && Combined[m+3] == '-'  ){

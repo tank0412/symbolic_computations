@@ -56,6 +56,9 @@ public class Transform {
             if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 't'&& symb[charptr + 4] == 'g') {//arctg
                 derivresult =  arctg(symb,charptr+5);
             }
+            if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 'c'&& symb[charptr + 4] == 't'&& symb[charptr + 5] == 'g') {//arcctg
+                derivresult =  arcctg(symb,charptr+6);
+            }
             if(symb[charptr] == '+') {
                     for(int j = 0; j < derivresult.length; ++ j) {
                         if(derivresult[j] == 0) {
@@ -624,6 +627,50 @@ public class Transform {
         }
         index = 0;
         for (c = z + 6; c < derivArgument.length; ++c, ++index) {
+            if (derivArgument[index] == 0) break;
+            result[c] = derivArgument[index];
+        }
+        result[c] = ')';
+        result[c+1] = '^';
+        result[c+2] = '2';
+        result[c+3] = ')';
+        return result;
+    }
+    private char[] arcctg(char[] symb, int i) {
+        char[] result = new char[100];
+        char[] argument = new char[100];
+        char[] derivArgument = new char[100];
+        int index = 0, z = 0;
+        //get arctg argument;
+        for (z = i + 1; ; z++) {
+            if (symb[z] != ')') {
+                argument[index] = symb[z];
+                index++;
+            } else {
+                break;
+            }
+
+        }
+        hardDerivative = true;
+        charptr = 0;
+        derivArgument = derivate(argument);
+        charptr = z;
+        hardDerivative = false;
+        int c;
+        for (z = 0; ; ++z) {
+            if (result[z] == 0) {
+                result[z] = '-';
+                result[z+1] = '1';
+                result[z+2] = '/';
+                result[z+3] = '(';
+                result[z + 4] = '1';
+                result[z + 5] = '+';
+                result[z + 6] = '(';
+                break;
+            }
+        }
+        index = 0;
+        for (c = z + 7; c < derivArgument.length; ++c, ++index) {
             if (derivArgument[index] == 0) break;
             result[c] = derivArgument[index];
         }

@@ -191,17 +191,22 @@ public class Transform {
                 result[c] = argument[index];
             }
             result[c] = ')';
-            result[c+1] = '^';
-            digit -=1;
-            result[c+2] = (char)( digit + '0');
-            index = 0;
-            c+=3;
-            result[c] = '*';
-            c++;
-            for ( ; c < derivArgument.length; ++c, ++index) {
-                if (derivArgument[index] == 0) break;
-                result[c] = derivArgument[index];
+            digit -= 1;
+            if(digit != 1) {
+                result[c + 1] = '^';
+                result[c + 2] = (char) (digit + '0');
+                c += 3;
             }
+            else{
+                c +=1;
+            }
+                index = 0;
+                result[c] = '*';
+                c++;
+                for (; c < derivArgument.length; ++c, ++index) {
+                    if (derivArgument[index] == 0) break;
+                    result[c] = derivArgument[index];
+                }
             int add = 1;
             char[] copyresult = new char[100];
             for(int k = 0; k <=result.length; ++k){

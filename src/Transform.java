@@ -307,6 +307,8 @@ public class Transform {
                 argument[index] = symb[z];
                 index++;
             } else {
+                argument[index] = symb[z];
+                index++;
                 break;
             }
 
@@ -320,7 +322,7 @@ public class Transform {
         for (z = 0; ; ++z) {
             if (result[z] == 0) {
                 result[z] = '1';
-                result[z+1] = '/';
+                result[z + 1] = '/';
                 result[z + 2] = '(';
                 result[z + 3] = 'c';
                 result[z + 4] = 'o';
@@ -332,14 +334,27 @@ public class Transform {
             }
         }
         index = 0;
-        for (c = z + 9; c < derivArgument.length; ++c, ++index) {
-            if (derivArgument[index] == 0) break;
-            result[c] = derivArgument[index];
+        for (c = z + 9; c < argument.length; ++c, ++index) {
+            if (argument[index] == 0) break;
+            if (argument[0] == 'x'&&argument[1] == ')') {
+                result[c] = argument[index];
+                c++;
+                break;
+            }
+            result[c] = argument[index];
         }
         result[c] = ')';
-        result[c+1] = ')';
-        return result;
+        result[c + 1] = ')';
+        index = 0;
+        if ((derivArgument[index] != '1' && derivArgument[index] != 'x') || derivArgument[index + 1] != 0) {
+            result[c + 2] = '*';
+            for (c = c + 3; c < derivArgument.length; ++c, ++index) {
+                if (derivArgument[index] == 0) break;
+                result[c] = derivArgument[index];
+            }
 
+        }
+        return result;
     }
     public char[] ctg(char[] symb, int i) {
         char[] result = new char[100];

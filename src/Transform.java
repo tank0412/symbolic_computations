@@ -10,7 +10,10 @@ public class Transform {
         for(; charptr < symb.length; ++charptr) {
             if(symb[charptr] == 0 ) break;
             if(symb[charptr] == 's' && symb[charptr + 1] == 'i' && symb[charptr + 2] == 'n') { //sin
-                derivresult =  sin(symb,charptr+3);
+                //derivresult =  sin(symb,charptr+3);
+                char[] first = {'c','o','s','('};
+                char[] second = {')'};
+                derivresult= genericDerivate(symb, charptr+3, first,second);
             }
             if(symb[charptr] == 'x' ) { //x only
                 for(int j = 0; j < derivresult.length; ++ j) {
@@ -30,49 +33,69 @@ public class Transform {
                 derivresult =  pow(symb, charptr);
             }
             if(symb[charptr] == 'c' && symb[charptr + 1] == 'o' && symb[charptr + 2] == 's') { //cos
-                derivresult =  cos(symb,charptr+3);
+                char[] first = {'-','s','i','n','('};
+                char[] second = {')'};
+                derivresult= genericDerivate(symb, charptr+3, first,second);
             }
             if(symb[charptr] == 't' && symb[charptr + 1] == 'g') { //tg
-                derivresult =  tg(symb,charptr+2);
+                char[] first = {'1','/','(','c','o','s','^','2','('};
+                char[] second = {')',')'};
+                derivresult= genericDerivate(symb, charptr+2, first,second);
             }
             if(symb[charptr] == 'c' && symb[charptr + 1] == 't'&& symb[charptr + 2] == 'g') { //ctg
-                derivresult =  ctg(symb,charptr+3);
+                char[] first = {'-','1','/','(','s','i','n','^','2','('};
+                char[] second = {')',')'};
+                derivresult= genericDerivate(symb, charptr+3, first,second);
             }
             if(symb[charptr] == 's' && symb[charptr + 1] == 'q'&& symb[charptr + 2] == 'r'&& symb[charptr + 3] == 't') { //sqrt
-                derivresult =  sqrt(symb,charptr+4);
+                char[] first = {'1','/','(','2','s','q','r','t','('};
+                char[] second = {')',')'};
+                derivresult= genericDerivate(symb, charptr+4, first,second);
             }
             if(symb[charptr] == 'l' && symb[charptr + 1] == 'n') { //ln
-                derivresult =  ln(symb,charptr+2);
+                char[] first = {'1','/','('};
+                char[] second = {')',};
+                derivresult= genericDerivate(symb, charptr+2, first,second);
             }
             if(symb[charptr] == 'e' && symb[charptr + 1] == '^') { //epsilon
-                derivresult =  eps(symb,charptr+2);
+                char[] first = {'e','^','('};
+                char[] second = {')',};
+                derivresult= genericDerivate(symb, charptr+2, first,second);
             }
             if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 's'&& symb[charptr + 4] == 'i'&& symb[charptr + 5] == 'n') {//arcsin
-                derivresult =  arcsin(symb,charptr+6);
+                char[] first = {'1','/','(','s','q','r','t','(','1','-','('};
+                char[] second = {')','^','2',')',')'};
+                derivresult= genericDerivate(symb, charptr+6, first,second);
             }
             if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 'c'&& symb[charptr + 4] == 'o'&& symb[charptr + 5] == 's') {//arccos
-                derivresult =  arccos(symb,charptr+6);
+                char[] first = {'-','1','/','(','s','q','r','t','(','1','-','('};
+                char[] second = {')','^','2',')',')'};
+                derivresult= genericDerivate(symb, charptr+6, first,second);
             }
             if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 't'&& symb[charptr + 4] == 'g') {//arctg
-                derivresult =  arctg(symb,charptr+5);
+                char[] first = {'1','/','(','1','+','('};
+                char[] second = {')','^','2',')'};
+                derivresult= genericDerivate(symb, charptr+5, first,second);
             }
             if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 'c'&& symb[charptr + 4] == 't'&& symb[charptr + 5] == 'g') {//arcctg
-                derivresult =  arcctg(symb,charptr+6);
+                char[] first = {'-','1','/','(','1','+','('};
+                char[] second = {')','^','2',')'};
+                derivresult= genericDerivate(symb, charptr+6, first,second);
             }
             if(symb[charptr] == 'l' && symb[charptr + 1] == 'o' && symb[charptr + 2] == 'g') { //log
                 derivresult =  log(symb,charptr+3);
             }
 
             if(symb[charptr] == '+') {
-                    for(int j = 0; j < derivresult.length; ++ j) {
-                        if(derivresult[j] == 0) {
-                            derivresult[j] = '+';
-                            saveresult = Combine(saveresult, derivresult,true);
-                            isSymbol = true;
-                            break;
-                        }
+                for(int j = 0; j < derivresult.length; ++ j) {
+                    if(derivresult[j] == 0) {
+                        derivresult[j] = '+';
+                        saveresult = Combine(saveresult, derivresult,true);
+                        isSymbol = true;
+                        break;
                     }
                 }
+            }
             if(symb[charptr] == '-') {
                 for(int j = 0; j < derivresult.length; ++ j) {
                     if(derivresult[j] == 0) {
@@ -92,13 +115,12 @@ public class Transform {
             return derivresult;
         }
     }
-
-    public char[] sin(char[] symb, int i) {
+    public char[] genericDerivate(char[] symb, int i, char[] firstpart, char[] secondPart) {
         char[] result = new char[100];
         char[] argument = new char[100];
         char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get sin argument;
+        int index = 0, z = 0, firstPartIndex, secondPartIndex;
+        //get argument;
         for (z = i + 1; ; z++) {
             if (symb[z] != ')') {
                 argument[index] = symb[z];
@@ -118,15 +140,14 @@ public class Transform {
         int c;
         for (z = 0; ; ++z) {
             if (result[z] == 0) {
-                result[z] = 'c';
-                result[z + 1] = 'o';
-                result[z + 2] = 's';
-                result[z + 3] = '(';
+                for (firstPartIndex = 0; firstPartIndex<firstpart.length; firstPartIndex++, ++z) {
+                    result[z] = firstpart[firstPartIndex];
+                }
                 break;
             }
         }
         index = 0;
-        for (c = z + 4; c < argument.length; ++c, ++index) {
+        for (c = z; c < argument.length; ++c, ++index) {
             if (argument[index] == 0) break;
             if (argument[0] == 'x'&&argument[1] == ')') {
                 result[c] = argument[index];
@@ -135,7 +156,14 @@ public class Transform {
             }
             result[c] = argument[index];
         }
-        result[c] = ')';
+        for (z = 0; ; ++z) {
+            if (result[z] == 0) {
+                for (secondPartIndex = 0; secondPartIndex < secondPart.length; secondPartIndex++, ++z) {
+                    result[z] = secondPart[secondPartIndex];
+                }
+                break;
+            }
+        }
         index = 0;
         if((derivArgument[index] != '1' && derivArgument[index] != 'x')|| derivArgument[index+1] != 0) {
             c++;
@@ -149,159 +177,77 @@ public class Transform {
         return result;
 
     }
-        public char[] pow(char[] symb, int i){
-            char[] result = new char[100];
-            char[] argument = new char[100];
-            char[] derivArgument = new char[100];
-            int index = 0, z = 0, backupcharptr=0;
-            for (z = i - 2; ; z--) {
-                if(z-1 >= 0) {
-                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^')||(symb[z - 5] == 'l'&& symb[z - 4] == 'o'&& symb[z - 3] == 'g'&& symb[z - 2] == '_'))) {
-                        index++;
-                    } else {
-                        break;
-                    }
 
-                }
-                else {
-                    break;
-                }
-            }
-            index = index - 1;
-            for (z = i - 2; ; z--) {
-                if(z-1 >= 0) {
-                    if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^')||(symb[z - 5] == 'l'&& symb[z - 4] == 'o'&& symb[z - 3] == 'g'&& symb[z - 2] == '_'))) {//e^(x)
-                        argument[index] = symb[z];
-                        index--;
-                    } else {
-                        break;
-                    }
-
-                }
-                else {
-                    break;
-                }
-            }
-            backupcharptr = charptr;
-            charptr = 0;
-            hardDerivative = true;
-            Transform transform = new Transform();
-            derivArgument = transform.derivate(argument);
-            charptr = backupcharptr;
-            hardDerivative = false;
-            int digit = Character.getNumericValue(symb[i + 1]);
-            int c;
-            for (z = 0; ; ++z) {
-                if (result[z] == 0) {
-                    result[z] = (char)( digit + '0');
-                    result[z+1] = '(';
-                    break;
-                }
-            }
-            index = 0;
-            for (c = z + 2; c < argument.length; ++c, ++index) {
-                if (argument[index] == 0) break;
-                if(argument[index] == '_') {
-                    c--;
-                    continue;
-                }
-                result[c] = argument[index];
-            }
-            result[c] = ')';
-            digit -= 1;
-            if(digit != 1) {
-                result[c + 1] = '^';
-                result[c + 2] = (char) (digit + '0');
-                c += 3;
-            }
-            else{
-                c +=1;
-            }
-                index = 0;
-            if(derivArgument[index] != '1'|| derivArgument[index+1] != 0) {
-                result[c] = '*';
-                c++;
-                for (; c < derivArgument.length; ++c, ++index) {
-                    if (derivArgument[index] == 0) break;
-                    result[c] = derivArgument[index];
-                }
-                }
-            int add = 1;
-            char[] copyresult = new char[100];
-            for(int k = 0; k <=result.length; ++k){
-                if(result[k] == '-' && (result[k-4] != 'r' && result[k-3] != 't' )){
-                    result[k]=' ';
-                    copyresult=Arrays.copyOf(result, result.length);;
-                    result[1] = result[0];
-
-                    for(int x = 2; x < result.length; ++x){
-                        if(result[x] == 0) {
-                            result[0]='-';
-                            break;
-                        }
-                        if(copyresult[x - add] == ' ') {
-                            add--;
-                            result[x] = copyresult[x -add];
-                        }
-                        else {
-                            result[x] = copyresult[x - add];
-                        }
-
-                    }
-                }
-                if(result[k] == 0){
-                  break;
-                }
-            }
-            return result;
-        }
-    public char[] cos(char[] symb, int i) {
+    public char[] pow(char[] symb, int i){
         char[] result = new char[100];
         char[] argument = new char[100];
         char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get sin argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                argument[index] = symb[z];
-                index++;
+        int index = 0, z = 0, backupcharptr=0;
+        for (z = i - 2; ; z--) {
+            if(z-1 >= 0) {
+                if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^')||(symb[z - 5] == 'l'&& symb[z - 4] == 'o'&& symb[z - 3] == 'g'&& symb[z - 2] == '_'))) {
+                    index++;
+                } else {
+                    break;
+                }
+
+            }
+            else {
                 break;
             }
-
         }
-        hardDerivative = true;
+        index = index - 1;
+        for (z = i - 2; ; z--) {
+            if(z-1 >= 0) {
+                if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^')||(symb[z - 5] == 'l'&& symb[z - 4] == 'o'&& symb[z - 3] == 'g'&& symb[z - 2] == '_'))) {//e^(x)
+                    argument[index] = symb[z];
+                    index--;
+                } else {
+                    break;
+                }
+
+            }
+            else {
+                break;
+            }
+        }
+        backupcharptr = charptr;
         charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
+        hardDerivative = true;
+        Transform transform = new Transform();
+        derivArgument = transform.derivate(argument);
+        charptr = backupcharptr;
         hardDerivative = false;
+        int digit = Character.getNumericValue(symb[i + 1]);
         int c;
         for (z = 0; ; ++z) {
             if (result[z] == 0) {
-                result[z] = '-';
-                result[z+1] = 's';
-                result[z + 2] = 'i';
-                result[z + 3] = 'n';
-                result[z + 4] = '(';
+                result[z] = (char)( digit + '0');
+                result[z+1] = '(';
                 break;
             }
         }
         index = 0;
-        for (c = z + 5; c < argument.length; ++c, ++index) {
+        for (c = z + 2; c < argument.length; ++c, ++index) {
             if (argument[index] == 0) break;
-            if (argument[0] == 'x'&&argument[1] == ')') {
-                result[c] = argument[index];
-                c++;
-                break;
+            if(argument[index] == '_') {
+                c--;
+                continue;
             }
             result[c] = argument[index];
         }
         result[c] = ')';
+        digit -= 1;
+        if(digit != 1) {
+            result[c + 1] = '^';
+            result[c + 2] = (char) (digit + '0');
+            c += 3;
+        }
+        else{
+            c +=1;
+        }
         index = 0;
-        if((derivArgument[index] != '1' && derivArgument[index] != 'x')|| derivArgument[index+1] != 0) {
-            c++;
+        if(derivArgument[index] != '1'|| derivArgument[index+1] != 0) {
             result[c] = '*';
             c++;
             for (; c < derivArgument.length; ++c, ++index) {
@@ -309,8 +255,34 @@ public class Transform {
                 result[c] = derivArgument[index];
             }
         }
-        return result;
+        int add = 1;
+        char[] copyresult = new char[100];
+        for(int k = 0; k <=result.length; ++k){
+            if(result[k] == '-' && (result[k-4] != 'r' && result[k-3] != 't' )){
+                result[k]=' ';
+                copyresult=Arrays.copyOf(result, result.length);;
+                result[1] = result[0];
 
+                for(int x = 2; x < result.length; ++x){
+                    if(result[x] == 0) {
+                        result[0]='-';
+                        break;
+                    }
+                    if(copyresult[x - add] == ' ') {
+                        add--;
+                        result[x] = copyresult[x -add];
+                    }
+                    else {
+                        result[x] = copyresult[x - add];
+                    }
+
+                }
+            }
+            if(result[k] == 0){
+                break;
+            }
+        }
+        return result;
     }
     public char[] Combine (char[] first, char[] second, boolean saveminus) {
         char[] combinedresult = new char[100];
@@ -320,494 +292,15 @@ public class Transform {
                 return CheckCombine(first);
             }
             if(first[i] == 0) {
-                    if(second[secondindex] == '-' && saveminus == false) {
-                        secondindex++;
-                        i--;
-                        continue;
-                    }
-                    first[i] = second[secondindex];
+                if(second[secondindex] == '-' && saveminus == false) {
                     secondindex++;
+                    i--;
+                    continue;
+                }
+                first[i] = second[secondindex];
+                secondindex++;
             }
         }
-    }
-    public char[] tg(char[] symb, int i) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get tg argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                argument[index] = symb[z];
-                index++;
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = '1';
-                result[z + 1] = '/';
-                result[z + 2] = '(';
-                result[z + 3] = 'c';
-                result[z + 4] = 'o';
-                result[z + 5] = 's';
-                result[z + 6] = '^';
-                result[z + 7] = '2';
-                result[z + 8] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 9; c < argument.length; ++c, ++index) {
-            if (argument[index] == 0) break;
-            if (argument[0] == 'x'&&argument[1] == ')') {
-                result[c] = argument[index];
-                c++;
-                break;
-            }
-            result[c] = argument[index];
-        }
-        result[c] = ')';
-        result[c + 1] = ')';
-        index = 0;
-        if ((derivArgument[index] != '1' && derivArgument[index] != 'x') || derivArgument[index + 1] != 0) {
-            result[c + 2] = '*';
-            for (c = c + 3; c < derivArgument.length; ++c, ++index) {
-                if (derivArgument[index] == 0) break;
-                result[c] = derivArgument[index];
-            }
-
-        }
-        return result;
-    }
-    public char[] ctg(char[] symb, int i) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get ctg argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                argument[index] = symb[z];
-                index++;
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = '-';
-                result[z+1] = '1';
-                result[z+2] = '/';
-                result[z + 3] = '(';
-                result[z + 4] = 's';
-                result[z + 5] = 'i';
-                result[z + 6] = 'n';
-                result[z + 7] = '^';
-                result[z + 8] = '2';
-                result[z + 9] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 10; c < argument.length; ++c, ++index) {
-            if (argument[index] == 0) break;
-            if (argument[0] == 'x'&&argument[1] == ')') {
-                result[c] = argument[index];
-                c++;
-                break;
-            }
-            result[c] = argument[index];
-        }
-        result[c] = ')';
-        result[c + 1] = ')';
-        index = 0;
-        if ((derivArgument[index] != '1' && derivArgument[index] != 'x') || derivArgument[index + 1] != 0) {
-            result[c + 2] = '*';
-            for (c = c + 3; c < derivArgument.length; ++c, ++index) {
-                if (derivArgument[index] == 0) break;
-                result[c] = derivArgument[index];
-            }
-
-        }
-        return result;
-
-    }
-    public char[] sqrt(char[] symb, int i) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get sqrt argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = '1';
-                result[z+1] = '/';
-                result[z+2] = '(';
-                result[z + 3] = '2';
-                result[z + 4] = 's';
-                result[z + 5] = 'q';
-                result[z + 6] = 'r';
-                result[z + 7] = 't';
-                result[z + 8] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 9; c < derivArgument.length; ++c, ++index) {
-            if (derivArgument[index] == 0) break;
-            result[c] = derivArgument[index];
-        }
-        result[c] = ')';
-        result[c+1] = ')';
-        return result;
-
-    }
-    public char[] ln(char[] symb, int i) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get ln argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                argument[index] = symb[z];
-                index++;
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = '1';
-                result[z+1] = '/';
-                result[z+2] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 3; c < argument.length; ++c, ++index) {
-            if (argument[index] == 0) break;
-            if (argument[0] == 'x'&&argument[1] == ')') {
-                result[c] = argument[index];
-                c++;
-                break;
-            }
-            result[c] = argument[index];
-        }
-        result[c] = ')';
-        index = 0;
-        if((derivArgument[index] != '1' && derivArgument[index] != 'x')|| derivArgument[index+1] != 0) {
-            c++;
-            result[c] = '*';
-            c++;
-            for (; c < derivArgument.length; ++c, ++index) {
-                if (derivArgument[index] == 0) break;
-                result[c] = derivArgument[index];
-            }
-        }
-        return result;
-
-    }
-    public char[] eps(char[] symb, int i) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get sqrt argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = 'e';
-                result[z+1] = '^';
-                result[z+2] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 3; c < derivArgument.length; ++c, ++index) {
-            if (derivArgument[index] == 0) break;
-            result[c] = derivArgument[index];
-        }
-        result[c] = ')';
-        return result;
-
-    }
-
-    private char[] arccos(char[] symb, int i) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get arcsin argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                argument[index] = symb[z];
-                index++;
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = '-';
-                result[z+1] = '1';
-                result[z+2] = '/';
-                result[z+3] = '(';
-                result[z + 4] = 's';
-                result[z + 5] = 'q';
-                result[z + 6] = 'r';
-                result[z + 7] = 't';
-                result[z + 8] = '(';
-                result[z + 9] = '1';
-                result[z + 10] = '-';
-                result[z + 11] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 12; c < argument.length; ++c, ++index) {
-            if (argument[index] == 0) break;
-            if (argument[0] == 'x'&&argument[1] == ')') {
-                result[c] = argument[index];
-                c++;
-                break;
-            }
-            result[c] = argument[index];
-        }
-        result[c] = ')';
-        result[c+1] = '^';
-        result[c+2] = '2';
-        result[c+3] = ')';
-        result[c+4] = ')';
-        index = 0;
-        if((derivArgument[index] != '1' && derivArgument[index] != 'x')|| derivArgument[index+1] != 0) {
-            result[c + 5] = '*';
-            c += 6;
-            for (; c < derivArgument.length; ++c, ++index) {
-                if (derivArgument[index] == 0) break;
-                result[c] = derivArgument[index];
-            }
-        }
-        return result;
-    }
-    private char[] arcsin(char[] symb, int i) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get arcsin argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                argument[index] = symb[z];
-                index++;
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = '1';
-                result[z+1] = '/';
-                result[z+2] = '(';
-                result[z + 3] = 's';
-                result[z + 4] = 'q';
-                result[z + 5] = 'r';
-                result[z + 6] = 't';
-                result[z + 7] = '(';
-                result[z + 8] = '1';
-                result[z + 9] = '-';
-                result[z + 10] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 11; c < argument.length; ++c, ++index) {
-            if (argument[index] == 0) break;
-            if (argument[0] == 'x'&&argument[1] == ')') {
-                result[c] = argument[index];
-                c++;
-                break;
-            }
-            result[c] = argument[index];
-        }
-        result[c] = ')';
-        result[c+1] = '^';
-        result[c+2] = '2';
-        result[c+3] = ')';
-        result[c+4] = ')';
-        index = 0;
-        if((derivArgument[index] != '1' && derivArgument[index] != 'x')|| derivArgument[index+1] != 0) {
-            result[c + 5] = '*';
-            c += 6;
-            for (; c < derivArgument.length; ++c, ++index) {
-                if (derivArgument[index] == 0) break;
-                result[c] = derivArgument[index];
-            }
-        }
-        return result;
-    }
-    private char[] arctg(char[] symb, int i) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get arctg argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = '1';
-                result[z+1] = '/';
-                result[z+2] = '(';
-                result[z + 3] = '1';
-                result[z + 4] = '+';
-                result[z + 5] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 6; c < derivArgument.length; ++c, ++index) {
-            if (derivArgument[index] == 0) break;
-            result[c] = derivArgument[index];
-        }
-        result[c] = ')';
-        result[c+1] = '^';
-        result[c+2] = '2';
-        result[c+3] = ')';
-        return result;
-    }
-    private char[] arcctg(char[] symb, int i) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get arctg argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = '-';
-                result[z+1] = '1';
-                result[z+2] = '/';
-                result[z+3] = '(';
-                result[z + 4] = '1';
-                result[z + 5] = '+';
-                result[z + 6] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 7; c < derivArgument.length; ++c, ++index) {
-            if (derivArgument[index] == 0) break;
-            result[c] = derivArgument[index];
-        }
-        result[c] = ')';
-        result[c+1] = '^';
-        result[c+2] = '2';
-        result[c+3] = ')';
-        return result;
     }
     public char[] log(char[] symb, int i) {
         char[] result = new char[100];
@@ -856,51 +349,51 @@ public class Transform {
 
     }
 
-public char[] CheckCombine(char[] Combined) {
-    for(int m = 0; m < Combined.length; ++m) {
-        if(Combined[m] == '+' && Character.isDigit(Combined[m+1]) && Combined[m+2] == '(' && Combined[m+3] == '-'  ){
-            Combined[m] = '-';
-        for(int n = m+3; n <Combined.length; ++n){
-            if(Combined[n] == 0) break;
-            Combined[n] = Combined[n+1];
-        }
-    }
-    if(Combined[m] == '+' && Combined[m+1] == '-' && Combined[m+2] == '1' && Combined[m+3] == '/'&& (Combined[m+4] == '('&& (Combined[m+5] == 's')  )) {
-        Combined[m] = '-';
-        for(int n = m+1; n <Combined.length; ++n){
-            if(Combined[n] == 0) break;
-            Combined[n] = Combined[n+1];
-        }
-    }
-        if(Combined[m] == '-' && Character.isDigit(Combined[m+1]) && Combined[m+2] == '(' && Combined[m+3] == '-'  ){
-            Combined[m] = '+';
-            for(int n = m+3; n <Combined.length; ++n){
-                if(Combined[n] == 0) break;
-                Combined[n] = Combined[n+1];
+    public char[] CheckCombine(char[] Combined) {
+        for(int m = 0; m < Combined.length; ++m) {
+            if(Combined[m] == '+' && Character.isDigit(Combined[m+1]) && Combined[m+2] == '(' && Combined[m+3] == '-'  ){
+                Combined[m] = '-';
+                for(int n = m+3; n <Combined.length; ++n){
+                    if(Combined[n] == 0) break;
+                    Combined[n] = Combined[n+1];
+                }
+            }
+            if(Combined[m] == '+' && Combined[m+1] == '-' && Combined[m+2] == '1' && Combined[m+3] == '/'&& (Combined[m+4] == '('&& (Combined[m+5] == 's')  )) {
+                Combined[m] = '-';
+                for(int n = m+1; n <Combined.length; ++n){
+                    if(Combined[n] == 0) break;
+                    Combined[n] = Combined[n+1];
+                }
+            }
+            if(Combined[m] == '-' && Character.isDigit(Combined[m+1]) && Combined[m+2] == '(' && Combined[m+3] == '-'  ){
+                Combined[m] = '+';
+                for(int n = m+3; n <Combined.length; ++n){
+                    if(Combined[n] == 0) break;
+                    Combined[n] = Combined[n+1];
+                }
+            }
+            if(Combined[m] == '-' && Combined[m+1] == '-' && Combined[m+2] == '1' && Combined[m+3] == '/'&& (Combined[m+4] == '('&& (Combined[m+5] == 's')  )) {
+                Combined[m] = '+';
+                for(int n = m+1; n <Combined.length; ++n){
+                    if(Combined[n] == 0) break;
+                    Combined[n] = Combined[n+1];
+                }
+            }
+            if(Combined[m] == '-' && Combined[m+1] == '-'  ){
+                Combined[m] = '+';
+                for(int n = m+1; n <Combined.length; ++n){
+                    if(Combined[n] == 0) break;
+                    Combined[n] = Combined[n+1];
+                }
+            }
+            if((Combined[m] == '+' && Combined[m+1] == '-' )|| (Combined[m] == '-' && Combined[m+1] == '+' ) ){
+                Combined[m] = '-';
+                for(int n = m+1; n <Combined.length; ++n){
+                    if(Combined[n] == 0) break;
+                    Combined[n] = Combined[n+1];
+                }
             }
         }
-    if(Combined[m] == '-' && Combined[m+1] == '-' && Combined[m+2] == '1' && Combined[m+3] == '/'&& (Combined[m+4] == '('&& (Combined[m+5] == 's')  )) {
-        Combined[m] = '+';
-        for(int n = m+1; n <Combined.length; ++n){
-            if(Combined[n] == 0) break;
-            Combined[n] = Combined[n+1];
-        }
+        return Combined;
     }
-        if(Combined[m] == '-' && Combined[m+1] == '-'  ){
-            Combined[m] = '+';
-            for(int n = m+1; n <Combined.length; ++n){
-                if(Combined[n] == 0) break;
-                Combined[n] = Combined[n+1];
-            }
-        }
-        if((Combined[m] == '+' && Combined[m+1] == '-' )|| (Combined[m] == '-' && Combined[m+1] == '+' ) ){
-            Combined[m] = '-';
-            for(int n = m+1; n <Combined.length; ++n){
-                if(Combined[n] == 0) break;
-                Combined[n] = Combined[n+1];
-            }
-        }
-    }
-    return Combined;
-}
 }

@@ -502,12 +502,14 @@ public class Transform {
         char[] argument = new char[100];
         char[] derivArgument = new char[100];
         int index = 0, z = 0;
-        //get sqrt argument;
+        //get ln argument;
         for (z = i + 1; ; z++) {
             if (symb[z] != ')') {
                 argument[index] = symb[z];
                 index++;
             } else {
+                argument[index] = symb[z];
+                index++;
                 break;
             }
 
@@ -527,11 +529,26 @@ public class Transform {
             }
         }
         index = 0;
-        for (c = z + 3; c < derivArgument.length; ++c, ++index) {
-            if (derivArgument[index] == 0) break;
-            result[c] = derivArgument[index];
+        for (c = z + 3; c < argument.length; ++c, ++index) {
+            if (argument[index] == 0) break;
+            if (argument[0] == 'x'&&argument[1] == ')') {
+                result[c] = argument[index];
+                c++;
+                break;
+            }
+            result[c] = argument[index];
         }
         result[c] = ')';
+        index = 0;
+        if((derivArgument[index] != '1' && derivArgument[index] != 'x')|| derivArgument[index+1] != 0) {
+            c++;
+            result[c] = '*';
+            c++;
+            for (; c < derivArgument.length; ++c, ++index) {
+                if (derivArgument[index] == 0) break;
+                result[c] = derivArgument[index];
+            }
+        }
         return result;
 
     }

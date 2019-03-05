@@ -520,6 +520,8 @@ public class Transform {
                 argument[index] = symb[z];
                 index++;
             } else {
+                argument[index] = symb[z];
+                index++;
                 break;
             }
 
@@ -548,15 +550,29 @@ public class Transform {
             }
         }
         index = 0;
-        for (c = z + 12; c < derivArgument.length; ++c, ++index) {
-            if (derivArgument[index] == 0) break;
-            result[c] = derivArgument[index];
+        for (c = z + 12; c < argument.length; ++c, ++index) {
+            if (argument[index] == 0) break;
+            if (argument[0] == 'x'&&argument[1] == ')') {
+                result[c] = argument[index];
+                c++;
+                break;
+            }
+            result[c] = argument[index];
         }
         result[c] = ')';
         result[c+1] = '^';
         result[c+2] = '2';
         result[c+3] = ')';
         result[c+4] = ')';
+        index = 0;
+        if((derivArgument[index] != '1' && derivArgument[index] != 'x')|| derivArgument[index+1] != 0) {
+            result[c + 5] = '*';
+            c += 6;
+            for (; c < derivArgument.length; ++c, ++index) {
+                if (derivArgument[index] == 0) break;
+                result[c] = derivArgument[index];
+            }
+        }
         return result;
     }
     private char[] arcsin(char[] symb, int i) {

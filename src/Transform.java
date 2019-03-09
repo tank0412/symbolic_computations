@@ -1,399 +1,372 @@
-import java.util.Arrays;
-
 public class Transform {
-    private int charptr = 0;
-    private boolean isSymbol = false;
-    private boolean hardDerivative = false;
-    private char[] saveresult = new char[100];
-    public char[] derivate(char[] symb) {
-        char[] derivresult = new char[100];
-        for(; charptr < symb.length; ++charptr) {
-            if(symb[charptr] == 0 ) break;
-            if(symb[charptr] == 's' && symb[charptr + 1] == 'i' && symb[charptr + 2] == 'n') { //sin
-                //derivresult =  sin(symb,charptr+3);
-                char[] first = {'c','o','s','('};
-                char[] second = {')'};
-                derivresult= genericDerivate(symb, charptr+3, first,second);
+    private Node previousNode;
+    public Node derivate(Node symb) {
+        Node derivatedNode = getByInOrder(symb);
+        return derivatedNode;
+    }
+    public Node getByInOrder(Node node){
+        Node resultNode = null;
+        switch(node.id) {
+            case pow: {
+                Node powNode = new Node(0,Expressions.mul);
+                int digit = 0;
+                if(node.left.id == Expressions.digit) {
+                    digit = (int)node.left.value;
+                    powNode.left = new Node(digit, Expressions.digit);
+                }
+                Node rightNode = new Node(0,Expressions.pow);
+                if(node.right.id == Expressions.x) {
+                    rightNode.right=new Node(0,Expressions.x);
+                    rightNode.left = new Node((digit-1), Expressions.digit);
+                    powNode.right = rightNode;
+                    resultNode = powNode;
+                    previousNode = powNode;
+                }
+                else {
+                    rightNode.right=node.right;
+                    //rightNode.right=hardArgument(node.right); // x
+                    rightNode.left = new Node((digit-1), Expressions.digit);
+                    powNode.right = rightNode;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left=powNode;
+                    mulNode.right=hardArgument(node.right); //
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
             }
-            if(symb[charptr] == 'x' ) { //x only
-                for(int j = 0; j < derivresult.length; ++ j) {
-                    if(derivresult[j] == 0) {
-                        if(hardDerivative == true){
-                            derivresult[j] = 'x';
+            case sin: {
+                Node sinNode = new Node(0,Expressions.cos);
+                if(node.right.id == Expressions.x) {
+                  sinNode.right = new Node(0,Expressions.x);
+                  resultNode = sinNode;
+                  previousNode = sinNode;
+                }
+                else{
+                    sinNode.right = node.right;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left = sinNode;
+                    mulNode.right=hardArgument(node.right); //
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
+            }
+            case cos: {
+                Node cosNode = new Node(0,Expressions.minus);
+                cosNode.left=new Node(0,Expressions.sin);
+                if(node.right.id == Expressions.x) {
+                    cosNode.left.right = new Node(0,Expressions.x);
+                    resultNode = cosNode;
+                    previousNode = cosNode;
+                }
+                else {
+                    cosNode.left.right = node.right;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left = cosNode;
+                    mulNode.right=hardArgument(node.right); //
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
+            }
+            case tg: {
+                Node tgNode = new Node(0,Expressions.div);
+                tgNode.left = new Node(1,Expressions.digit);
+                Node denominator = new Node(0,Expressions.pow);
+                denominator.right = new Node(2,Expressions.digit);
+                denominator.left= new Node(0,Expressions.cos);
+                if(node.right.id == Expressions.x) {
+                    denominator.left.right = new Node(0,Expressions.x);
+                    tgNode.right = denominator;
+                    resultNode = tgNode;
+                    previousNode = tgNode;
+                }
+                else  {
+                    denominator.left.right = node.right;
+                    tgNode.left.right = denominator;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left = tgNode;
+                    mulNode.right=hardArgument(node.right); //
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
+            }
+            case ctg: {
+                //Node tgNode = new Node(0,Expressions.div);
+                Node ctgNode = new Node(0,Expressions.minus);
+                ctgNode.left = new Node(0,Expressions.div);
+                ctgNode.left.left = new Node(1,Expressions.digit);
+                Node denominator = new Node(0,Expressions.pow);
+                denominator.right = new Node(2,Expressions.digit);
+                denominator.left= new Node(0,Expressions.sin);
+                if(node.right.id == Expressions.x) {
+                    denominator.left.right = new Node(0,Expressions.x);
+                    ctgNode.left.right = denominator;
+                    resultNode = ctgNode;
+                    previousNode = ctgNode;
+                }
+                else{
+                    denominator.left.right = node.right;
+                    ctgNode.left.right = denominator;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left = ctgNode;
+                    mulNode.right=hardArgument(node.right); //
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
+            }
+            case arcsin: {
+                Node arcsinNode = new Node(0,Expressions.div);
+                arcsinNode.left = new Node(1,Expressions.digit);// 1/()
+                Node denominator = new Node(0,Expressions.sqrt); //sqrt(1-
+                denominator.left= new Node(0,Expressions.minus);
+                denominator.left.left = new Node(1,Expressions.digit);
+                Node powArgument = new Node(0,Expressions.pow); //()^2
+                powArgument.right = new Node(2, Expressions.digit);
+                if(node.right.id == Expressions.x) {
+                    powArgument.left = new Node(0, Expressions.x);
+                    denominator.left.right = powArgument;
+                    arcsinNode.right = denominator;
+                    resultNode = arcsinNode;
+                    previousNode = arcsinNode;
+                }
+                else {
+                    powArgument.left = node.right;
+                    denominator.left.right = powArgument;
+                    arcsinNode.right = denominator;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left = arcsinNode;
+                    mulNode.right=hardArgument(node.right); //
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
+            }
+            case arccos: {
+                //Node arccosNode = new Node(0,Expressions.div);
+                Node arccosNode = new Node(0,Expressions.minus);
+                arccosNode.left = new Node(0,Expressions.div);
+                arccosNode.left.left = new Node(1,Expressions.digit);// 1/()
+                Node denominator = new Node(0,Expressions.sqrt); //sqrt(1-
+                denominator.left= new Node(0,Expressions.minus);
+                denominator.left.left = new Node(1,Expressions.digit);
+                Node powArgument = new Node(0,Expressions.pow); //x^2
+                powArgument.right = new Node(2, Expressions.digit);
+                if(node.right.id == Expressions.x) {
+                    powArgument.left = new Node(0, Expressions.x);
+                    denominator.left.right = powArgument;
+                    arccosNode.left.right = denominator;
+                    resultNode = arccosNode;
+                    previousNode = arccosNode;
+                }
+                else {
+                    powArgument.left = node.right;
+                    denominator.left.right = powArgument;
+                    arccosNode.left.right = denominator;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left = arccosNode;
+                    mulNode.right=hardArgument(node.right); //
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
+            }
+            case arctg: {
+                Node arctgNode = new Node(0,Expressions.div);
+                arctgNode.left = new Node(1,Expressions.digit);// 1/()
+                Node denominator = new Node(0,Expressions.plus); //+
+                denominator.left= new Node(1,Expressions.digit); //1
+                Node powArgument = new Node(0,Expressions.pow); //()^2
+                powArgument.right = new Node(2, Expressions.digit);
+
+                if(node.right.id == Expressions.x) {
+                    powArgument.left = new Node(0, Expressions.x);
+                    denominator.right = powArgument;
+                    arctgNode.right = denominator;
+                    resultNode = arctgNode;
+                    previousNode = arctgNode;
+                }
+                else {
+                    powArgument.left = node.right;
+                    denominator.right = powArgument;
+                    arctgNode.left.right = denominator;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left = arctgNode;
+                    mulNode.right=hardArgument(node.right);
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
+            }
+            case arcctg: {
+                Node arcctgNode = new Node(0,Expressions.minus);
+                arcctgNode.left = new Node(0,Expressions.div);
+                arcctgNode.left.left = new Node(1,Expressions.digit);// 1/()
+                Node denominator = new Node(0,Expressions.plus); //sqrt(1-
+                denominator.left= new Node(1,Expressions.digit);
+                Node powArgument = new Node(0,Expressions.pow); //x^2
+                powArgument.right = new Node(2, Expressions.digit);
+                if(node.right.id == Expressions.x) {
+                    powArgument.left = new Node(0, Expressions.x);
+                    denominator.right = powArgument;
+                    arcctgNode.left.right = denominator;
+                    resultNode = arcctgNode;
+                    previousNode = arcctgNode;
+                }
+                else {
+                    powArgument.left = node.right;
+                    denominator.right = powArgument;
+                    arcctgNode.left.right = denominator;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left = arcctgNode;
+                    mulNode.right=hardArgument(node.right);
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
+            }
+            case sqrt: {
+                if (node.right.id == Expressions.x) {
+                    Node sqrtNode = new Node(0, Expressions.div);
+                    sqrtNode.left = new Node(1, Expressions.digit);// 1/()
+                    Node denominator = new Node(0, Expressions.mul); //*
+                    denominator.left = new Node(2, Expressions.digit); //2
+                    Node sqrtArgument = new Node(0, Expressions.sqrt); //sqrt
+                    sqrtArgument.left = new Node(0, Expressions.x);// x
+                    denominator.right = sqrtArgument;
+                    sqrtNode.right = denominator;
+                    resultNode = sqrtNode;
+                    previousNode = sqrtNode;
+                }
+                break;
+            }
+            case ln: {
+                Node lnNode = new Node(0, Expressions.div);
+                lnNode.left = new Node(1, Expressions.digit);// 1/()
+                if (node.right.id == Expressions.x) {
+                    Node denominator = new Node(0, Expressions.x); //x
+                    lnNode.right = denominator;
+                    resultNode = lnNode;
+                    previousNode = lnNode;
+                }
+                else{
+                    Node denominator =node.right; //x
+                    lnNode.right = denominator;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left = lnNode;
+                    mulNode.right=hardArgument(node.right);
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
+            }
+            case exponent: {
+                if (node.right.id == Expressions.x) {
+                    Node lnNode = new Node(0, Expressions.pow);
+                    lnNode.left = new Node(0, Expressions.exponent);// e^
+                    lnNode.right = new Node(0, Expressions.x); //x;
+                    resultNode = lnNode;
+                    previousNode = lnNode;
+                }
+                break;
+            }
+            case log:{
+                Node logNode = new Node(0, Expressions.div);
+                logNode.left = new Node(1, Expressions.digit);// 1/()
+                Node denominator = new Node(0, Expressions.mul); //*
+                if (node.right.id == Expressions.x) {
+                    denominator.left = new Node(0, Expressions.x); //x
+                    Node lnArgument = new Node(0, Expressions.ln); //ln
+                    lnArgument.left = new Node(0, node.left.id);// a
+                    denominator.right = lnArgument;
+                    logNode.right = denominator;
+                    resultNode = logNode;
+                    previousNode = logNode;
+                }
+                else{
+                    denominator.left = node.right; //x
+                    Node lnArgument = new Node(0, Expressions.ln); //ln
+                    lnArgument.left = new Node(0, node.left.id);// a
+                    denominator.right = lnArgument;
+                    logNode.right = denominator;
+                    Node mulNode = new Node(0,Expressions.mul);
+                    mulNode.left = logNode;
+                    mulNode.right=hardArgument(node.right);
+                    resultNode = mulNode;
+                    previousNode = mulNode;
+                }
+                break;
+            }
+            case minus: {
+                Node minusNode = new Node(0, Expressions.minus);
+                if(previousNode != null) {
+                    minusNode.right = previousNode;
+                }
+                else{
+                    minusNode.left = getByInOrder(node.left);
+                }
+                Node minusleft = getByInOrder(node.right);
+                if(minusleft.id == Expressions.minus){
+                    minusNode.id = Expressions.plus;
+                    minusleft.id = minusleft.left.id;
+                    minusleft.value = minusleft.left.value;
+                    try {
+                        minusleft.right = minusleft.left.right;
+                    }
+                    catch(Exception NullPointerException ) {
+                        ;
+                    }
+                    try{
+                    minusleft.left = minusleft.left.left;
+                    }
+                    catch(Exception NullPointerException ) {
+                        ;
+                    }
+                }
+                else {
+                    if((minusleft.id == Expressions.mul && minusleft.left.id == Expressions.minus )) {
+                        minusNode.id = Expressions.plus;
+
+                        minusleft.left.id = minusleft.left.left.id;
+                        minusleft.left.value = minusleft.left.left.value;
+                        try {
+                            minusleft.left.right = minusleft.left.left.right;
                         }
-                        else {
-                            derivresult[j] = '1';
+                        catch(Exception NullPointerException ) {
+                            ;
                         }
-                        break;
+                        try{
+                            minusleft.left.left = minusleft.left.left.left;
+                        }
+                        catch(Exception NullPointerException ) {
+                            ;
+                        }
                     }
                 }
+                minusNode.right= minusleft;
+                resultNode = minusNode;
+                previousNode = minusNode;
+                break;
             }
+            case plus: {
+                Node plusNode = new Node(0, Expressions.plus);
+                plusNode.right = getByInOrder(node.right);
+                plusNode.left= getByInOrder(node.left);
+                resultNode = plusNode;
+                previousNode = plusNode;
+                break;
+            }
+        }
 
-            if(symb[charptr] == '^' && Character.isDigit(symb[charptr + 1]) ) {//pow
-                derivresult =  pow(symb, charptr);
-            }
-            if(symb[charptr] == 'c' && symb[charptr + 1] == 'o' && symb[charptr + 2] == 's') { //cos
-                char[] first = {'-','s','i','n','('};
-                char[] second = {')'};
-                derivresult= genericDerivate(symb, charptr+3, first,second);
-            }
-            if(symb[charptr] == 't' && symb[charptr + 1] == 'g') { //tg
-                char[] first = {'1','/','(','c','o','s','^','2','('};
-                char[] second = {')',')'};
-                derivresult= genericDerivate(symb, charptr+2, first,second);
-            }
-            if(symb[charptr] == 'c' && symb[charptr + 1] == 't'&& symb[charptr + 2] == 'g') { //ctg
-                char[] first = {'-','1','/','(','s','i','n','^','2','('};
-                char[] second = {')',')'};
-                derivresult= genericDerivate(symb, charptr+3, first,second);
-            }
-            if(symb[charptr] == 's' && symb[charptr + 1] == 'q'&& symb[charptr + 2] == 'r'&& symb[charptr + 3] == 't') { //sqrt
-                char[] first = {'1','/','(','2','s','q','r','t','('};
-                char[] second = {')',')'};
-                derivresult= genericDerivate(symb, charptr+4, first,second);
-            }
-            if(symb[charptr] == 'l' && symb[charptr + 1] == 'n') { //ln
-                char[] first = {'1','/','('};
-                char[] second = {')',};
-                derivresult= genericDerivate(symb, charptr+2, first,second);
-            }
-            if(symb[charptr] == 'e' && symb[charptr + 1] == '^') { //epsilon
-                char[] first = {'e','^','('};
-                char[] second = {')',};
-                derivresult= genericDerivate(symb, charptr+2, first,second);
-            }
-            if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 's'&& symb[charptr + 4] == 'i'&& symb[charptr + 5] == 'n') {//arcsin
-                char[] first = {'1','/','(','s','q','r','t','(','1','-','('};
-                char[] second = {')','^','2',')',')'};
-                derivresult= genericDerivate(symb, charptr+6, first,second);
-            }
-            if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 'c'&& symb[charptr + 4] == 'o'&& symb[charptr + 5] == 's') {//arccos
-                char[] first = {'-','1','/','(','s','q','r','t','(','1','-','('};
-                char[] second = {')','^','2',')',')'};
-                derivresult= genericDerivate(symb, charptr+6, first,second);
-            }
-            if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 't'&& symb[charptr + 4] == 'g') {//arctg
-                char[] first = {'1','/','(','1','+','('};
-                char[] second = {')','^','2',')'};
-                derivresult= genericDerivate(symb, charptr+5, first,second);
-            }
-            if (symb[charptr] == 'a' && symb[charptr + 1] == 'r' && symb[charptr + 2] == 'c'&& symb[charptr + 3] == 'c'&& symb[charptr + 4] == 't'&& symb[charptr + 5] == 'g') {//arcctg
-                char[] first = {'-','1','/','(','1','+','('};
-                char[] second = {')','^','2',')'};
-                derivresult= genericDerivate(symb, charptr+6, first,second);
-            }
-            if(symb[charptr] == 'l' && symb[charptr + 1] == 'o' && symb[charptr + 2] == 'g') { //log
-                derivresult =  log(symb,charptr+3);
-            }
-
-            if(symb[charptr] == '+') {
-                for(int j = 0; j < derivresult.length; ++ j) {
-                    if(derivresult[j] == 0) {
-                        derivresult[j] = '+';
-                        saveresult = Combine(saveresult, derivresult,true);
-                        isSymbol = true;
-                        break;
-                    }
-                }
-            }
-            if(symb[charptr] == '-') {
-                for(int j = 0; j < derivresult.length; ++ j) {
-                    if(derivresult[j] == 0) {
-                        derivresult[j] = '-';
-                        saveresult = Combine(saveresult, derivresult,true);
-                        isSymbol = true;
-                        break;
-                    }
-                }
-            }
-        }
-        if(isSymbol == true && saveresult != derivresult && hardDerivative != true ) {
-            isSymbol= false;
-            return Combine(saveresult, derivresult,true);
-        }
-        else {
-            return derivresult;
-        }
+        return resultNode;
     }
-    public char[] genericDerivate(char[] symb, int i, char[] firstpart, char[] secondPart) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0, firstPartIndex, secondPartIndex;
-        //get argument;
-        for (z = i + 1; ; z++) {
-            if (symb[z] != ')') {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                argument[index] = symb[z];
-                index++;
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                for (firstPartIndex = 0; firstPartIndex<firstpart.length; firstPartIndex++, ++z) {
-                    result[z] = firstpart[firstPartIndex];
-                }
-                break;
-            }
-        }
-        index = 0;
-        for (c = z; c < argument.length; ++c, ++index) {
-            if (argument[index] == 0) break;
-            if (argument[0] == 'x'&&argument[1] == ')') {
-                result[c] = argument[index];
-                c++;
-                break;
-            }
-            result[c] = argument[index];
-        }
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                for (secondPartIndex = 0; secondPartIndex < secondPart.length; secondPartIndex++, ++z) {
-                    result[z] = secondPart[secondPartIndex];
-                }
-                break;
-            }
-        }
-        index = 0;
-        if((derivArgument[index] != '1' && derivArgument[index] != 'x')|| derivArgument[index+1] != 0) {
-            c++;
-            result[c] = '*';
-            c++;
-            for (; c < derivArgument.length; ++c, ++index) {
-                if (derivArgument[index] == 0) break;
-                result[c] = derivArgument[index];
-            }
-        }
-        return result;
-
+    public Node hardArgument(Node node) {
+        Transform transform2 = new Transform();
+        Node argumentNode = transform2.getByInOrder(node);
+        return argumentNode;
     }
 
-    public char[] pow(char[] symb, int i){
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0, backupcharptr=0;
-        for (z = i - 2; ; z--) {
-            if(z-1 >= 0) {
-                if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^')||(symb[z - 5] == 'l'&& symb[z - 4] == 'o'&& symb[z - 3] == 'g'&& symb[z - 2] == '_'))) {
-                    index++;
-                } else {
-                    break;
-                }
-
-            }
-            else {
-                break;
-            }
-        }
-        index = index - 1;
-        for (z = i - 2; ; z--) {
-            if(z-1 >= 0) {
-                if (symb[z] != '(' || symb[z - 1] == 's' || symb[z - 1] == 'n'|| symb[z - 1] == 'g'||(symb[z - 2] == 'r'&& symb[z - 1] == 't'||(symb[z - 2] == 'e'&& symb[z - 1] == '^')||(symb[z - 5] == 'l'&& symb[z - 4] == 'o'&& symb[z - 3] == 'g'&& symb[z - 2] == '_'))) {//e^(x)
-                    argument[index] = symb[z];
-                    index--;
-                } else {
-                    break;
-                }
-
-            }
-            else {
-                break;
-            }
-        }
-        backupcharptr = charptr;
-        charptr = 0;
-        hardDerivative = true;
-        Transform transform = new Transform();
-        derivArgument = transform.derivate(argument);
-        charptr = backupcharptr;
-        hardDerivative = false;
-        int digit = Character.getNumericValue(symb[i + 1]);
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = (char)( digit + '0');
-                result[z+1] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 2; c < argument.length; ++c, ++index) {
-            if (argument[index] == 0) break;
-            if(argument[index] == '_') {
-                c--;
-                continue;
-            }
-            result[c] = argument[index];
-        }
-        result[c] = ')';
-        digit -= 1;
-        if(digit != 1) {
-            result[c + 1] = '^';
-            result[c + 2] = (char) (digit + '0');
-            c += 3;
-        }
-        else{
-            c +=1;
-        }
-        index = 0;
-        if(derivArgument[index] != '1'|| derivArgument[index+1] != 0) {
-            result[c] = '*';
-            c++;
-            for (; c < derivArgument.length; ++c, ++index) {
-                if (derivArgument[index] == 0) break;
-                result[c] = derivArgument[index];
-            }
-        }
-        int add = 1;
-        char[] copyresult = new char[100];
-        for(int k = 0; k <=result.length; ++k){
-            if(result[k] == '-' && (result[k-4] != 'r' && result[k-3] != 't' )){
-                result[k]=' ';
-                copyresult=Arrays.copyOf(result, result.length);;
-                result[1] = result[0];
-
-                for(int x = 2; x < result.length; ++x){
-                    if(result[x] == 0) {
-                        result[0]='-';
-                        break;
-                    }
-                    if(copyresult[x - add] == ' ') {
-                        add--;
-                        result[x] = copyresult[x -add];
-                    }
-                    else {
-                        result[x] = copyresult[x - add];
-                    }
-
-                }
-            }
-            if(result[k] == 0){
-                break;
-            }
-        }
-        return result;
-    }
-    public char[] Combine (char[] first, char[] second, boolean saveminus) {
-        char[] combinedresult = new char[100];
-        int secondindex = 0;
-        for(int i = 0; ; ++ i) {
-            if(second[secondindex] == 0) {
-                return CheckCombine(first);
-            }
-            if(first[i] == 0) {
-                if(second[secondindex] == '-' && saveminus == false) {
-                    secondindex++;
-                    i--;
-                    continue;
-                }
-                first[i] = second[secondindex];
-                secondindex++;
-            }
-        }
-    }
-    public char[] log(char[] symb, int i) {
-        char[] result = new char[100];
-        char[] argument = new char[100];
-        char[] derivArgument = new char[100];
-        int index = 0, z = 0;
-        //get log argument;
-        char aArgument = symb[i+1];
-        for (z = i + 2; ; z++) {
-            if (symb[z] != 0 && symb[z] != ')' ) {
-                argument[index] = symb[z];
-                index++;
-            } else {
-                break;
-            }
-
-        }
-        hardDerivative = true;
-        charptr = 0;
-        derivArgument = derivate(argument);
-        charptr = z;
-        hardDerivative = false;
-        int c;
-        for (z = 0; ; ++z) {
-            if (result[z] == 0) {
-                result[z] = '1';
-                result[z + 1] = '/';
-                result[z + 2] = '(';
-                result[z + 3] = '(';
-                break;
-            }
-        }
-        index = 0;
-        for (c = z + 4; c < derivArgument.length; ++c, ++index) {
-            if (derivArgument[index] == 0) break;
-            result[c] = derivArgument[index];
-        }
-        result[c] = ')';
-        result[c+1] = 'l';
-        result[c+2] = 'n';
-        result[c+3] = '(';
-        result[c+4] = aArgument;
-        result[c+5] = ')';
-        result[c+6] = ')';
-        return result;
-
-    }
-
-    public char[] CheckCombine(char[] Combined) {
-        for(int m = 0; m < Combined.length; ++m) {
-            if(Combined[m] == '+' && Character.isDigit(Combined[m+1]) && Combined[m+2] == '(' && Combined[m+3] == '-'  ){
-                Combined[m] = '-';
-                for(int n = m+3; n <Combined.length; ++n){
-                    if(Combined[n] == 0) break;
-                    Combined[n] = Combined[n+1];
-                }
-            }
-            if(Combined[m] == '+' && Combined[m+1] == '-' && Combined[m+2] == '1' && Combined[m+3] == '/'&& (Combined[m+4] == '('&& (Combined[m+5] == 's')  )) {
-                Combined[m] = '-';
-                for(int n = m+1; n <Combined.length; ++n){
-                    if(Combined[n] == 0) break;
-                    Combined[n] = Combined[n+1];
-                }
-            }
-            if(Combined[m] == '-' && Character.isDigit(Combined[m+1]) && Combined[m+2] == '(' && Combined[m+3] == '-'  ){
-                Combined[m] = '+';
-                for(int n = m+3; n <Combined.length; ++n){
-                    if(Combined[n] == 0) break;
-                    Combined[n] = Combined[n+1];
-                }
-            }
-            if(Combined[m] == '-' && Combined[m+1] == '-' && Combined[m+2] == '1' && Combined[m+3] == '/'&& (Combined[m+4] == '('&& (Combined[m+5] == 's')  )) {
-                Combined[m] = '+';
-                for(int n = m+1; n <Combined.length; ++n){
-                    if(Combined[n] == 0) break;
-                    Combined[n] = Combined[n+1];
-                }
-            }
-            if(Combined[m] == '-' && Combined[m+1] == '-'  ){
-                Combined[m] = '+';
-                for(int n = m+1; n <Combined.length; ++n){
-                    if(Combined[n] == 0) break;
-                    Combined[n] = Combined[n+1];
-                }
-            }
-            if((Combined[m] == '+' && Combined[m+1] == '-' )|| (Combined[m] == '-' && Combined[m+1] == '+' ) ){
-                Combined[m] = '-';
-                for(int n = m+1; n <Combined.length; ++n){
-                    if(Combined[n] == 0) break;
-                    Combined[n] = Combined[n+1];
-                }
-            }
-        }
-        return Combined;
-    }
 }

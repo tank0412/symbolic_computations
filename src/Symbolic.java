@@ -1,21 +1,20 @@
 class Symbolic {
     public static void main(String[] args) {
         char[] text = new char[100];
-        char[] symb = new char[100];
-        char[] derivated = new char[100];
-        char[] exported = new char[100];
+        Node importedNode;
+        Node transofmedNode;
+        Node exportedNode;
         Write write = new Write();
         Parse parse = new Parse();
-        text = parse.getInput();
+        text = parse.getInput(); // get char array after input
         Import import_mine = new Import();
-        symb = import_mine.convertToAsciiMath(text);
+        importedNode = import_mine.converttoSymbolic(text);// convert char to node (internal symbolic view)
+        write.writeNode(importedNode);
         Transform transform = new Transform();
-        derivated = transform.derivate(symb);
-        write.Write(derivated);
+        transofmedNode = transform.derivate(importedNode); //transform node with expression to node with derivated expression
         Export export = new Export();
-        String derivatedString = String.valueOf(derivated);
-        exported = export.infixToPostfix(derivatedString);
-        write.Write(exported);
+        exportedNode = export.getOutput(transofmedNode);
+        write.writeNode(exportedNode);
         return;
 
     }

@@ -1,5 +1,9 @@
 public class Write {
-    public void Write(char[] Text) {
+    public void writeText(char[] Text) {
         System.out.println(Text);
+    }
+    public void writeNode(Node node) {
+        node.traverseInOrder(node);
+        System.out.println(" ");
     }
 }

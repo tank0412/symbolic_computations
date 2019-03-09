@@ -7,7 +7,7 @@ public class Parse {
         String expr = reader.nextLine();
         /*
         Write write = new Write();
-        write.Write(expr.toCharArray());
+        write.writeText(expr.toCharArray());
         */
         return expr.toCharArray();
     }

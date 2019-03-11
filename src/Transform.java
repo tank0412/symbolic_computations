@@ -1,8 +1,24 @@
 public class Transform {
     private Node previousNode;
+    private Node nodeExpr;
+    private Node computeNode;
+    private boolean checkNodeId = false;
     public Node derivate(Node symb) {
-        Node derivatedNode = getByInOrder(symb);
-        return derivatedNode;
+        Node derivatedNode = null;
+        if(symb.id != Expressions.Switch) {
+            derivatedNode = getByInOrder(symb);
+        }
+        else{
+            Parse parse = new Parse();
+            nodeExpr = parse.getContext(); // default is (x)^2
+            derivatedNode = execSymbAlgo(symb);
+        }
+        if(derivatedNode == null) {
+            return computeNode;
+        }
+        else {
+            return derivatedNode;
+        }
     }
     public Node getByInOrder(Node node){
         Node resultNode = null;
@@ -70,6 +86,42 @@ public class Transform {
         }
 
         return resultNode;
+    }
+    public Node execSymbAlgo(Node nodeAlgo) {
+        Node result = null;
+        Node resultNode = null;
+        if(nodeAlgo.left.id == Expressions.NodeId) {
+            checkNodeId = true;
+        }
+        if(checkNodeId == true) {
+            if (nodeAlgo.right.id == Expressions.Case) {
+                execSymbAlgo(nodeAlgo.right);
+                return null;
+            }
+            if (nodeAlgo.id == Expressions.Case) {
+                //nodeAlgo.left.id - case condition
+                if(nodeAlgo.left.id == nodeExpr.id ) {
+                    if(nodeAlgo.right.id == Expressions.body) {
+                        Node bodyNode = nodeAlgo.right;
+                        if(bodyNode.left.id == Expressions.assign) {
+                            Node assignNode = bodyNode.left;
+                            if(assignNode.left.id == Expressions.resultNode) {
+                                switch (assignNode.right.id ) {
+                                    case derivPow: {
+                                        result = derivPow(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
     public Node derivPow(Node node) {
         Node resultNode = null;

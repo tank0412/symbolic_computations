@@ -84,7 +84,7 @@ public class Transform {
                 }
                 else  {
                     denominator.left.right = node.right;
-                    tgNode.left.right = denominator;
+                    tgNode.right = denominator;
                     Node mulNode = new Node(0,Expressions.mul);
                     mulNode.left = tgNode;
                     mulNode.right=hardArgument(node.right); //
@@ -192,7 +192,7 @@ public class Transform {
                 else {
                     powArgument.left = node.right;
                     denominator.right = powArgument;
-                    arctgNode.left.right = denominator;
+                    arctgNode.right = denominator;
                     Node mulNode = new Node(0,Expressions.mul);
                     mulNode.left = arctgNode;
                     mulNode.right=hardArgument(node.right);

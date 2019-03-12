@@ -44,5 +44,6 @@ public enum Expressions{
     derivLn,
     derivLog,
     derivMinus,
-    derivPlus
+    derivPlus,
+    context
 }

@@ -93,7 +93,7 @@ public class Transform {
         if(nodeAlgo.left.id == Expressions.NodeId) {
             checkNodeId = true;
         }
-        if(checkNodeId == true) {
+        if(checkNodeId == true && nodeAlgo.right != null) {
             if (nodeAlgo.right.id == Expressions.Case) {
                 execSymbAlgo(nodeAlgo.right);
                 return null;

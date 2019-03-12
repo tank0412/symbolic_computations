@@ -1,5 +1,6 @@
 import java.beans.Expression;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Import {
     private int ptr = 0;
@@ -32,6 +33,24 @@ public class Import {
             }
             expr = checkInput(text,i);
             if(expr!= null) {
+                if(expr == Expressions.context) {
+                    char[] expr2 = new char[100];
+                    expr2 = Arrays.copyOfRange(text, i, text.length);
+                    Node node = convertAsciMathToSymbolic(expr2);
+                    if(node != null) {
+                        Parse.context = node;
+                    }
+                    /*
+                    int backup = ptr;
+                    ptr = i;
+                    Node node = convertAsciMathToSymbolic(text);
+                    ptr = backup;
+                    if(node != null) {
+                        Parse.context = node;
+                    }
+                    */
+                    return new Node(0, expr);
+                }
                 if(expr == Expressions.sin ||expr == Expressions.cos||expr == Expressions.ctg) {
                     if(checkIsCase(expr) == true){
                         continue;
@@ -275,8 +294,9 @@ public class Import {
                 }
                 if(expr == Expressions.NodeId ) {
                     Node switchCondNode = new Node(0,expr);
-                    if(previousNode.id == Expressions.Switch) {
-                        previousNode.left = switchCondNode;
+                    Node node = findLastNotFullNode(previousNode);
+                    if(node.id == Expressions.Switch) {
+                        node.left = switchCondNode;
                     }
                     continue;
                 }
@@ -322,6 +342,11 @@ public class Import {
                     appendFunc(expr);
                     continue;
                 }
+                if(expr == Expressions.context) {
+                    Node exprFromContext = convertAsciMathToSymbolic(text);
+                    Parse.context = exprFromContext;
+                    return new Node(0, expr);
+                }
                 }
         }
 
@@ -359,12 +384,16 @@ public class Import {
                 ptr += 5;
                 return Expressions.Switch;
             }
+            if (text[i] == 'c' && text[i + 1] == 'o' && text[i + 2] == 'n' && text[i + 3] == 't' && text[i + 4] == 'e' && text[i + 5] == 'x'&& text[i + 6] == 't') {//context
+                ptr += 6;
+                return Expressions.context;
+            }
             if (text[i] == 's' && text[i + 1] == 'i' && text[i + 2] == 'n') { //sin
                 ptr += 2;
                 return Expressions.sin;
             }
 
-            if (text[i] == 'x') { //x only
+            if (text[i] == 'x' && text[i+1] != 't'  ) { //x only
                 return Expressions.x;
             }
 
@@ -559,7 +588,13 @@ public class Import {
         }
     }
     public boolean checkIsCase(Expressions expr) {
-        Node node = findLastNotFullNode(previousNode);
+        Node node = null;
+        if(previousNode != null) {
+            node = findLastNotFullNode(previousNode);
+        }
+        else {
+            return false;
+        }
         if(node.id == Expressions.body || node.id == Expressions.assign ) { //TODO: УБРАТЬ КОСТЫЛЬ
         return true;
         }
@@ -571,6 +606,9 @@ public class Import {
         else return false;
     }
     public Node findLastNotFullNode(Node node) {
+        if(node == null) {
+            return null;
+        }
         if(node.right == null || node.left == null) {
             return node;
         }

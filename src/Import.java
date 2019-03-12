@@ -212,10 +212,10 @@ public class Import {
                     plusNode = new Node(0,expr);
                     i +=1;
                     if(previousNode != null) {
-                        plusNode.right = previousNode;
+                        plusNode.left = previousNode;
                     }
                     ptr = i;
-                    plusNode.left= convertAsciMathToSymbolic(text);
+                    plusNode.right= convertAsciMathToSymbolic(text);
                     previousNode = plusNode;
                     i = ptr;
                     continue;

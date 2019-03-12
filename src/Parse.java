@@ -14,7 +14,7 @@ public class Parse {
         return expr.toCharArray();
     }
     char[] getInputAgain() {
-        System.out.println("Context is changed Tnter algo now");
+        System.out.println("Context is changed. Enter algo now");
         Scanner reader = new Scanner(System.in);
         String expr = reader.nextLine();
         /*
@@ -34,11 +34,12 @@ public class Parse {
         result.right = new Node(3, Expressions.x);
         */
         if(context == null) {
+            System.out.println("Using a default context");
             Node result = new Node(0, Expressions.plus);
-            result.left = new Node(3, Expressions.sin);
-            result.left.right = new Node(3, Expressions.x);
-            result.right = new Node(3, Expressions.cos);
-            result.right.right = new Node(3, Expressions.x);
+            result.left = new Node(0, Expressions.sin);
+            result.left.right = new Node(0, Expressions.x);
+            result.right = new Node(0, Expressions.cos);
+            result.right.right = new Node(0, Expressions.x);
             return result;
         }
         else {

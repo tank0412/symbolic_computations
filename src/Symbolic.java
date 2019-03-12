@@ -14,10 +14,9 @@ class Symbolic {
             Import import_mine2 = new Import();
             text = parse2.getInputAgain();
             importedNode = import_mine2.converttoSymbolic(text);
+            write.writeNode(Parse.context);
         }
-        write.writeNode(importedNode);
         Transform transform = new Transform();
-        write.writeNode(Parse.context);
         transofmedNode = transform.derivate(importedNode); //transform node with expression to node with derivated expression
         Export export = new Export();
         exportedNode = export.getOutput(transofmedNode);

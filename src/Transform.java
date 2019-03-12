@@ -10,7 +10,9 @@ public class Transform {
         }
         else{
             Parse parse = new Parse();
-            nodeExpr = parse.getContext(); // default is (x)^2
+            nodeExpr = parse.getContext(); // use default context
+            Write write = new Write();
+            write.writeNode(nodeExpr);
             derivatedNode = execSymbAlgo(symb);
         }
         if(derivatedNode == null) {

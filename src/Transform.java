@@ -114,10 +114,21 @@ public class Transform {
                                         }
                                         break;
                                     }
+                                    case derivCos: {
+                                        result = derivCos(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
+                }
+                else {
+                    execSymbAlgo(nodeAlgo.right);
+                    return null;
                 }
             }
         }

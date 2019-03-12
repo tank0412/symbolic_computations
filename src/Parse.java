@@ -12,9 +12,14 @@ public class Parse {
         return expr.toCharArray();
     }
     Node getContext() {
+        /*
         Node result = new Node(0, Expressions.pow);
         result.left = new Node(3, Expressions.digit);
         result.right = new Node(0, Expressions.x);
+        */
+
+        Node result = new Node(0, Expressions.cos);
+        result.right = new Node(3, Expressions.x);
         return result;
     }
     }

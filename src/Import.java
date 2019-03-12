@@ -423,7 +423,15 @@ public class Import {
             if (text[i] == '+') {
                 return Expressions.plus;
             }
+            if (text[i] == 'p' && text[i + 1] == 'l' && text[i + 2] == 'u'&& text[i + 3] == 's') { //plus
+                ptr += 3;
+                return Expressions.plus;
+            }
             if (text[i] == '-') {
+                return Expressions.minus;
+            }
+            if (text[i] == 'm' && text[i + 1] == 'i' && text[i + 2] == 'n'&& text[i + 3] == 'u'&& text[i + 4] == 's') { //minus
+                ptr += 4;
                 return Expressions.minus;
             }
             if (text[i] == '(') {

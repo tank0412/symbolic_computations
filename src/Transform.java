@@ -121,6 +121,90 @@ public class Transform {
                                         }
                                         break;
                                     }
+                                    case derivSin: {
+                                        result = derivSin(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivTg: {
+                                        result = derivTg(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivCtg: {
+                                        result = derivCtg(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivArcsin: {
+                                        result = derivArcsin(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivArccos: {
+                                        result = derivArccos(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivArctg: {
+                                        result = derivArctg(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivArcctg: {
+                                        result = derivArcctg(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivSqrt: {
+                                        result = derivSqrt(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivLn: {
+                                        result = derivLn(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivLog: {
+                                        result = derivLog(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivMinus: {
+                                        result = derivMinus(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
+                                    case derivPlus: {
+                                        result = derivPlus(nodeExpr);
+                                        if(result != null) {
+                                            computeNode = result;
+                                        }
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -497,6 +581,25 @@ public class Transform {
         Node plusNode = new Node(0, Expressions.plus);
         plusNode.right = getByInOrder(node.right);
         plusNode.left= getByInOrder(node.left);
+        Node plusleft = getByInOrder(node.right);
+        if(plusleft.id == Expressions.minus){
+            plusNode.id = Expressions.minus;
+            plusleft.id = plusleft.left.id;
+            plusleft.value = plusleft.left.value;
+            try {
+                plusleft.right = plusleft.left.right;
+            }
+            catch(Exception NullPointerException ) {
+                ;
+            }
+            try{
+                plusleft.left = plusleft.left.left;
+            }
+            catch(Exception NullPointerException ) {
+                ;
+            }
+        }
+        plusNode.right= plusleft;
         resultNode = plusNode;
         previousNode = plusNode;
         return resultNode;

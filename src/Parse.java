@@ -17,9 +17,15 @@ public class Parse {
         result.left = new Node(3, Expressions.digit);
         result.right = new Node(0, Expressions.x);
         */
-
-        Node result = new Node(0, Expressions.cos);
+        /*
+        Node result = new Node(0, Expressions.sin);
         result.right = new Node(3, Expressions.x);
+        */
+        Node result = new Node(0, Expressions.plus);
+        result.left = new Node(3, Expressions.sin);
+        result.left.right = new Node(3, Expressions.x);
+        result.right = new Node(3, Expressions.cos);
+        result.right.right = new Node(3, Expressions.x);
         return result;
     }
     }

@@ -29,11 +29,11 @@ public class Import {
             expr = checkInput(text,i);
             if(expr!= null) {
                 if(expr == Expressions.sin ||expr == Expressions.cos||expr == Expressions.ctg) {
-                    sinNode = new Node(0,expr);
+                    sinNode = new Node(expr);
                     previousNode = sinNode;
                     i +=4;
                     if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(0, Expressions.x );
+                        sinNode.right=new Node(Expressions.x );
                         i++;
                     }
                     else{
@@ -41,11 +41,11 @@ public class Import {
                     }
                 }
                 if(expr == Expressions.tg) {
-                    sinNode = new Node(0,expr);
+                    sinNode = new Node(expr);
                     previousNode = sinNode;
                     i +=3;
                     if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(0, Expressions.x );
+                        sinNode.right=new Node(Expressions.x );
                         i++;
                         if(checkInput(text,i) == Expressions.closeBracket ) {
                             ;
@@ -57,11 +57,11 @@ public class Import {
                     }
                 }
                 if(expr == Expressions.arcsin ||expr == Expressions.arccos||expr == Expressions.arcctg ) {
-                    sinNode = new Node(0,expr);
+                    sinNode = new Node(expr);
                     previousNode = sinNode;
                     i +=7;
                     if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(0, Expressions.x );
+                        sinNode.right=new Node(Expressions.x );
                         i++;
                         if(checkInput(text,i) == Expressions.closeBracket ) {
                             ;
@@ -73,10 +73,10 @@ public class Import {
                     }
                 }
                 if(expr == Expressions.arctg ) {
-                    sinNode = new Node(0,expr);
+                    sinNode = new Node(expr);
                     i +=6;
                     if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(0, Expressions.x );
+                        sinNode.right=new Node(Expressions.x );
                         i++;
                         if(checkInput(text,i) == Expressions.closeBracket ) {
                             ;
@@ -89,10 +89,10 @@ public class Import {
                     previousNode = sinNode;
                 }
                 if(expr == Expressions.sqrt ) {
-                    sinNode = new Node(0,expr);
+                    sinNode = new Node(expr);
                     i +=5;
                     if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(0, Expressions.x );
+                        sinNode.right=new Node(Expressions.x );
                         i++;
                         if(checkInput(text,i) == Expressions.closeBracket ) {
                             ;
@@ -105,10 +105,10 @@ public class Import {
                     previousNode = sinNode;
                 }
                 if(expr == Expressions.ln ) {
-                    sinNode = new Node(0,expr);
+                    sinNode = new Node(expr);
                     i +=3;
                     if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(0, Expressions.x );
+                        sinNode.right=new Node(Expressions.x );
                         i++;
                         if(checkInput(text,i) == Expressions.closeBracket ) {
                             ;
@@ -121,14 +121,14 @@ public class Import {
                     previousNode = sinNode;
                 }
                 if(expr == Expressions.log ) {
-                    Node logNode = new Node(0,expr);
+                    Node logNode = new Node(expr);
                     i +=4;
                     if(checkInput(text,i) == Expressions.a) {
-                        logNode.left = new Node(0, Expressions.a);
+                        logNode.left = new Node(Expressions.a);
                     }
                     i+=2;
                     if(checkInput(text,i) == Expressions.x) {
-                        logNode.right=new Node(0, Expressions.x );
+                        logNode.right=new Node(Expressions.x );
                         i++;
                         if(checkInput(text,i) == Expressions.closeBracket ) {
                             ;
@@ -141,11 +141,11 @@ public class Import {
                     previousNode = logNode;
                 }
                 if(expr == Expressions.exponent ) {
-                    Node exprNode = new Node(0,Expressions.pow);
+                    Node exprNode = new Node(Expressions.pow);
                     i +=3;
-                    exprNode.left = new Node(0,Expressions.exponent);
+                    exprNode.left = new Node(Expressions.exponent);
                     if(checkInput(text,i) == Expressions.x) {
-                        exprNode.right=new Node(0, Expressions.x );
+                        exprNode.right=new Node(Expressions.x );
                         i++;
                         if(checkInput(text,i) == Expressions.closeBracket ) {
                             ;
@@ -158,8 +158,8 @@ public class Import {
                     previousNode = exprNode;
                 }
                 if(expr == Expressions.plus ) {
-                    Node plusNode = new Node(0,expr);
-                    plusNode = new Node(0,expr);
+                    Node plusNode = new Node(expr);
+                    plusNode = new Node(expr);
                     i +=1;
                     if(previousNode != null) {
                         plusNode.right = previousNode;
@@ -171,7 +171,7 @@ public class Import {
                     continue;
                 }
                 if(expr == Expressions.minus ) {
-                    Node minusNode = new Node(0,expr);
+                    Node minusNode = new Node(expr);
                     i +=1;
                     if(previousNode != null) {
                         minusNode.left = previousNode;
@@ -208,14 +208,14 @@ public class Import {
                         continue;
                     }
                     if(((i-1) - (q+1)) == 2){  // значит это (x)
-                        powNode = new Node(0, Expressions.pow );
-                        powNode.right = new Node(0,Expressions.x);
-                        left = new Node((int) (text[i+1] - '0'), Expressions.digit );
+                        powNode = new Node(Expressions.pow );
+                        powNode.right = new Node(Expressions.x);
+                        left = new Digit((int) (text[i+1] - '0'));
                         powNode.left = left;
                         previousNode = powNode;
                     }
                     else{
-                        powNode = new Node(0, Expressions.pow );
+                        powNode = new Node(Expressions.pow );
                         ptr = q+1;
                         isPowAgain = true;
                         char subFunc[] = new char[100];
@@ -224,7 +224,7 @@ public class Import {
                         }
                         powNode.right = convertAsciMathToSymbolic(subFunc);
                         isPowAgain = false;
-                        left = new Node((int) (text[i+1] - '0'), Expressions.digit );
+                        left = new Digit((int) (text[i+1] - '0'));
                         powNode.left = left;
                         previousNode = powNode;
                     }

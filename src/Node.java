@@ -22,18 +22,4 @@ public class Node {
                 traverseInOrder(node.right);
             }
     }
-    public void traversePreOrder(Node node) {
-        if (node != null) {
-            System.out.print(" " + node.value + node.id.name());
-            traversePreOrder(node.left);
-            traversePreOrder(node.right);
-        }
-    }
-    public void traversePostOrder(Node node) {
-        if (node != null) {
-            traversePostOrder(node.left);
-            traversePostOrder(node.right);
-            System.out.print(" " + node.value + node.id.name());
-        }
-    }
 }

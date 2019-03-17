@@ -61,8 +61,7 @@ public class Transform {
             case tg: {
                 Node tgNode = new Node(Expressions.div);
                 tgNode.left = new Digit(1);
-                Node denominator = new Node(Expressions.pow);
-                denominator.right =new Digit(2);
+                Node denominator = preparePow();
                 denominator.left= new Node(Expressions.cos);
                 if(node.right.id == Expressions.x) {
                     ((Node) denominator.left).right= new Node(Expressions.x);
@@ -82,8 +81,7 @@ public class Transform {
                 Node ctgNode = new Node(Expressions.minus);
                 ctgNode.left = new Node(Expressions.div);
                 ((Node) ctgNode.left).left= new Digit(1);
-                Node denominator = new Node(Expressions.pow);
-                denominator.right = new Digit(2);
+                Node denominator = preparePow();
                 denominator.left= new Node(Expressions.sin);
                 if(node.right.id == Expressions.x) {
                     ((Node) denominator.left).right= new Node(Expressions.x);
@@ -104,8 +102,7 @@ public class Transform {
                 Node denominator = new Node(Expressions.sqrt); //sqrt(1-
                 denominator.left= new Node(Expressions.minus);
                 ((Node) denominator.left).left= new Digit(1);
-                Node powArgument = new Node(Expressions.pow); //()^2
-                powArgument.right = new Digit(2);;
+                Node powArgument = preparePow();
                 if(node.right.id == Expressions.x) {
                     powArgument.left = new Node(Expressions.x);
                     ((Node) denominator.left).right= powArgument;
@@ -151,15 +148,11 @@ public class Transform {
                 arctgNode.left = new Digit(1);;// 1/()
                 Node denominator = new Node(Expressions.plus); //+
                 denominator.left=new Digit(1);; //1
-                Node powArgument = new Node(Expressions.pow); //()^2
-                powArgument.right = new Digit(2);;
+                Node powArgument = preparePow(); //1 / 1 + ()^2
 
                 if(node.right.id == Expressions.x) {
                     powArgument.left = new Node(Expressions.x);
-                    denominator.right = powArgument;
-                    arctgNode.right = denominator;
-                    resultNode = arctgNode;
-                    previousNode = arctgNode;
+                    resultNode=finishDenominator(denominator,powArgument,arctgNode);
                 }
                 else {
                     powArgument.left = node.right;
@@ -202,8 +195,8 @@ public class Transform {
                     sqrtArgument.left = new Node(Expressions.x);// x
                     denominator.right = sqrtArgument;
                     sqrtNode.right = denominator;
-                    resultNode = sqrtNode;
                     previousNode = sqrtNode;
+                    resultNode = sqrtNode;
                 }
                 break;
             }
@@ -213,8 +206,8 @@ public class Transform {
                 if (node.right.id == Expressions.x) {
                     Node denominator = new Node(Expressions.x); //x
                     lnNode.right = denominator;
-                    resultNode = lnNode;
                     previousNode = lnNode;
+                    resultNode = lnNode;
                 }
                 else{
                     Node denominator =node.right; //x
@@ -228,8 +221,8 @@ public class Transform {
                     Node lnNode = new Node(Expressions.pow);
                     lnNode.left = new Node(Expressions.exponent);// e^
                     lnNode.right = new Node(Expressions.x); //x;
-                    resultNode = lnNode;
                     previousNode = lnNode;
+                    resultNode = lnNode;
                 }
                 break;
             }
@@ -241,10 +234,7 @@ public class Transform {
                     denominator.left = new Node(Expressions.x); //x
                     Node lnArgument = new Node(Expressions.ln); //ln
                     lnArgument.left = new Node(((Node) node.left).id);// a
-                    denominator.right = lnArgument;
-                    logNode.right = denominator;
-                    resultNode = logNode;
-                    previousNode = logNode;
+                    resultNode=finishDenominator(denominator,lnArgument,logNode);
                 }
                 else{
                     denominator.left = node.right; //x
@@ -308,6 +298,17 @@ public class Transform {
         mulNode.right=argumentNode;
         previousNode = mulNode;
         return mulNode;
+    }
+    public Node preparePow() {
+        Node denominator = new Node(Expressions.pow);
+        denominator.right =new Digit(2); //  / ()^2
+        return denominator;
+    }
+    public Node finishDenominator(Node denominator, Node argument, Node node) {
+        denominator.right = argument;
+        node.right = denominator;
+        previousNode = node;
+        return node;
     }
 
 }

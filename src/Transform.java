@@ -4,7 +4,7 @@ public class Transform {
         Node derivatedNode = getByInOrder(symb);
         return derivatedNode;
     }
-    public Node getByInOrder(Node node){
+    private Node getByInOrder(Node node){
         Node resultNode = null;
         switch(node.id) {
             case pow: {
@@ -290,7 +290,7 @@ public class Transform {
 
         return resultNode;
     }
-    public Node hardArgument(Node node, Node leftNode) {
+    private Node hardArgument(Node node, Node leftNode) {
         Transform transform2 = new Transform();
         Node argumentNode = transform2.getByInOrder(node);
         Node mulNode = new Node(Expressions.mul);
@@ -299,12 +299,12 @@ public class Transform {
         previousNode = mulNode;
         return mulNode;
     }
-    public Node preparePow() {
+    private Node preparePow() {
         Node denominator = new Node(Expressions.pow);
         denominator.right =new Digit(2); //  / ()^2
         return denominator;
     }
-    public Node finishDenominator(Node denominator, Node argument, Node node) {
+    private Node finishDenominator(Node denominator, Node argument, Node node) {
         denominator.right = argument;
         node.right = denominator;
         previousNode = node;

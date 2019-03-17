@@ -1,23 +1,17 @@
-import java.util.ArrayList;
-
 public class Import {
     private int ptr = 0;
-    boolean isPowAgain = false;
-    Node left;
-    Node right;
-    Node powNode;
-    Node sinNode;
-    Node previousNode;
-    int startBracket, endBracket;
+    private boolean isPowAgain = false;
+    private Node sinNode;
+    private Node previousNode;
     public Node converttoSymbolic(char[] text) {
         Node node = convertAsciMathToSymbolic(text);
         return node;
 
     }
-    public Node convertAsciMathToSymbolic(char[] text) {
-        Node tempnode = null;
-        ArrayList symb = new ArrayList();
+    private Node convertAsciMathToSymbolic(char[] text) {
+        Node powNode;
         Expressions expr;
+        Node left;
         for(int i = ptr; i < text.length; ++i) {
             if(i < ptr){
                 i=ptr;
@@ -43,17 +37,8 @@ public class Import {
                     sinNode = new Node(expr);
                     previousNode = sinNode;
                     i +=3;
-                    if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(Expressions.x );
-                        i++;
-                        if(checkInput(text,i) == Expressions.closeBracket ) {
-                            ;
-                        }
-
-                    }
-                    else{
-                        hardArgument(text,i,sinNode);
-                    }
+                    checkX(text,i);
+                    ++i;
                 }
                 if(expr == Expressions.arcsin ||expr == Expressions.arccos||expr == Expressions.arcctg ) {
                     sinNode = new Node(expr);
@@ -62,9 +47,6 @@ public class Import {
                     if(checkInput(text,i) == Expressions.x) {
                         sinNode.right=new Node(Expressions.x );
                         i++;
-                        if(checkInput(text,i) == Expressions.closeBracket ) {
-                            ;
-                        }
 
                     }
                     else {
@@ -74,50 +56,20 @@ public class Import {
                 if(expr == Expressions.arctg ) {
                     sinNode = new Node(expr);
                     i +=6;
-                    if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(Expressions.x );
-                        i++;
-                        if(checkInput(text,i) == Expressions.closeBracket ) {
-                            ;
-                        }
-
-                    }
-                    else{
-                        hardArgument(text,i,sinNode);
-                    }
-                    previousNode = sinNode;
+                    checkX(text,i);
+                    ++i;
                 }
                 if(expr == Expressions.sqrt ) {
                     sinNode = new Node(expr);
                     i +=5;
-                    if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(Expressions.x );
-                        i++;
-                        if(checkInput(text,i) == Expressions.closeBracket ) {
-                            ;
-                        }
-
-                    }
-                    else{
-                        hardArgument(text,i,sinNode);
-                    }
-                    previousNode = sinNode;
+                    checkX(text,i);
+                    ++i;
                 }
                 if(expr == Expressions.ln ) {
                     sinNode = new Node(expr);
                     i +=3;
-                    if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(Expressions.x );
-                        i++;
-                        if(checkInput(text,i) == Expressions.closeBracket ) {
-                            ;
-                        }
-
-                    }
-                    else{
-                        hardArgument(text,i,sinNode);
-                    }
-                    previousNode = sinNode;
+                    checkX(text,i);
+                    ++i;
                 }
                 if(expr == Expressions.log ) {
                     Node logNode = new Node(expr);
@@ -126,17 +78,8 @@ public class Import {
                         logNode.left = new Node(Expressions.a);
                     }
                     i+=2;
-                    if(checkInput(text,i) == Expressions.x) {
-                        logNode.right=new Node(Expressions.x );
-                        i++;
-                        if(checkInput(text,i) == Expressions.closeBracket ) {
-                            ;
-                        }
-
-                    }
-                    else{
-                        hardArgument(text,i,logNode);
-                    }
+                    checkX(text,i);
+                    ++i;
                     previousNode = logNode;
                 }
                 if(expr == Expressions.exponent ) {
@@ -157,28 +100,12 @@ public class Import {
                     previousNode = exprNode;
                 }
                 if(expr == Expressions.plus ) {
-                    Node plusNode = new Node(expr);
-                    plusNode = new Node(expr);
-                    i +=1;
-                    if(previousNode != null) {
-                        plusNode.left = previousNode;
-                    }
-                    ptr = i;
-                    plusNode.right= convertAsciMathToSymbolic(text);
-                    previousNode = plusNode;
+                    doJobForMathSymbol(expr,i,text);
                     i = ptr;
                     break;
                 }
                 if(expr == Expressions.minus ) {
-
-                    Node minusNode = new Node(expr);
-                    i +=1;
-                    if(previousNode != null) {
-                        minusNode.left = previousNode;
-                    }
-                    ptr = i;
-                    minusNode.right= convertAsciMathToSymbolic(text);
-                    previousNode = minusNode;
+                    doJobForMathSymbol(expr,i,text);
                     i = ptr;
                     break;
 
@@ -187,7 +114,7 @@ public class Import {
                    int BracketCountOpen = 0, BracketCountClose = 0;
                    int q = 0;
                    for(q = i; q < text.length; --q){
-                       if((BracketCountOpen==BracketCountClose && (BracketCountOpen !=0 && BracketCountClose !=0)  ) || text[q] == 0) {
+                       if((BracketCountOpen==BracketCountClose && (BracketCountOpen !=0)  ) || text[q] == 0) {
                            break;
                        }
                        if(checkInput(text,q) == Expressions.openBracket) {
@@ -197,12 +124,6 @@ public class Import {
                            BracketCountClose++;
                        }
                    }
-                   /*
-                   System.out.println(BracketCountOpen);
-                   System.out.println(BracketCountClose);
-                   System.out.println(i); // -1
-                   System.out.println(q); // +1
-                   */
                     if(isPowAgain) {
                         i=i+1;
                         continue;
@@ -228,15 +149,14 @@ public class Import {
                         powNode.left = left;
                         previousNode = powNode;
                     }
-                    //ptr = i;
-                    //i=ptr;
                 }
                 }
         }
 
         return  previousNode;
     }
-    public void hardArgument(char[] text,int i, Node node) {
+    private void hardArgument(char[] text,int i, Node node) {
+        int startBracket, endBracket;
         char subFunc[] = new char[100];
         startBracket = 0; endBracket = 0;
         startBracket++;
@@ -247,7 +167,7 @@ public class Import {
             if(checkInput(text,c) == Expressions.openBracket){
                 startBracket++;
             }
-            if(startBracket==endBracket && startBracket != 0 && endBracket != 0 ) {
+            if(startBracket==endBracket && startBracket != 0 ) {
                 //subFunc[index] = text[c];
                 //index++;
                 break;
@@ -259,7 +179,7 @@ public class Import {
         node.right = argumentNode;
         previousNode = node;
     }
-    public Expressions checkInput(char[] text, int i) {
+    private Expressions checkInput(char[] text, int i) {
         if(i >= text.length || text[i] == 0) return null;
         if(text[i] == 's' && text[i + 1] == 'i' && text[i + 2] == 'n') { //sin
             ptr+=2;
@@ -339,5 +259,25 @@ public class Import {
         }
         return null;
     
+    }
+    private void checkX(char[] text, int i) {
+        if(checkInput(text,i) == Expressions.x) {
+            sinNode.right=new Node(Expressions.x );
+
+        }
+        else{
+            hardArgument(text,i,sinNode);
+        }
+        previousNode = sinNode;
+    }
+    private void doJobForMathSymbol(Expressions expr, int i, char[] text) {
+        Node node = new Node(expr);
+        i +=1;
+        if(previousNode != null) {
+            node.left = previousNode;
+        }
+        ptr = i;
+        node.right= convertAsciMathToSymbolic(text);
+        previousNode = node;
     }
 }

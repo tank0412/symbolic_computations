@@ -27,11 +27,7 @@ public class Transform {
                     //rightNode.right=hardArgument(node.right); // x
                     rightNode.left = new Digit((digit-1));
                     powNode.right = rightNode;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left=powNode;
-                    mulNode.right=hardArgument(node.right); //
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,powNode); ;
                 }
                 break;
             }
@@ -44,11 +40,7 @@ public class Transform {
                 }
                 else{
                     sinNode.right = node.right;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left = sinNode;
-                    mulNode.right=hardArgument(node.right); //
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,sinNode);
                 }
                 break;
             }
@@ -62,11 +54,7 @@ public class Transform {
                 }
                 else {
                     ((Node) cosNode.left).right= node.right;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left = cosNode;
-                    mulNode.right=hardArgument(node.right); //
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,cosNode);
                 }
                 break;
             }
@@ -85,11 +73,7 @@ public class Transform {
                 else  {
                     ((Node) denominator.left).right= new Node(Expressions.x);
                     tgNode.right = denominator;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left = tgNode;
-                    mulNode.right=hardArgument(node.right); //
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,tgNode);
                 }
                 break;
             }
@@ -110,11 +94,7 @@ public class Transform {
                 else{
                     ((Node) denominator.left).right= node.right;
                     ((Node) ctgNode.left).right= denominator;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left = ctgNode;
-                    mulNode.right=hardArgument(node.right); //
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,ctgNode);
                 }
                 break;
             }
@@ -137,11 +117,7 @@ public class Transform {
                     powArgument.left = node.right;
                     ((Node) denominator.left).right= powArgument;
                     arcsinNode.right = denominator;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left = arcsinNode;
-                    mulNode.right=hardArgument(node.right); //
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,arcsinNode);
                 }
                 break;
             }
@@ -149,10 +125,10 @@ public class Transform {
                 //Node arccosNode = new Node(0,Expressions.div);
                 Node arccosNode = new Node(Expressions.minus);
                 arccosNode.left = new Node(Expressions.div);
-                ((Digit) arccosNode.left).left= new Digit(1);;// 1/()
+                ((Node) arccosNode.left).left= new Digit(1);;// 1/()
                 Node denominator = new Node(Expressions.sqrt); //sqrt(1-
                 denominator.left= new Node(Expressions.minus);
-                ((Digit) denominator.left).left = new Digit(1);;
+                ((Node) denominator.left).left = new Digit(1);;
                 Node powArgument = new Node(Expressions.pow); //x^2
                 powArgument.right = new Digit(2);;
                 if(node.right.id == Expressions.x) {
@@ -166,11 +142,7 @@ public class Transform {
                     powArgument.left = node.right;
                     ((Node) denominator.left).right= powArgument;
                     ((Node) arccosNode.left).right= denominator;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left = arccosNode;
-                    mulNode.right=hardArgument(node.right); //
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,arccosNode);
                 }
                 break;
             }
@@ -193,18 +165,14 @@ public class Transform {
                     powArgument.left = node.right;
                     denominator.right = powArgument;
                     arctgNode.right = denominator;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left = arctgNode;
-                    mulNode.right=hardArgument(node.right);
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,arctgNode);
                 }
                 break;
             }
             case arcctg: {
                 Node arcctgNode = new Node(Expressions.minus);
                 arcctgNode.left = new Node(Expressions.div);
-                ((Digit) arcctgNode.left).left=  new Digit(1);// 1/()
+                ((Node) arcctgNode.left).left=  new Digit(1);// 1/()
                 Node denominator = new Node(Expressions.plus); //sqrt(1-
                 denominator.left= new Digit(1);;
                 Node powArgument = new Node(Expressions.pow); //x^2
@@ -220,11 +188,7 @@ public class Transform {
                     powArgument.left = node.right;
                     denominator.right = powArgument;
                     ((Node) arcctgNode.left).right=  denominator;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left = arcctgNode;
-                    mulNode.right=hardArgument(node.right);
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,arcctgNode);
                 }
                 break;
             }
@@ -255,11 +219,7 @@ public class Transform {
                 else{
                     Node denominator =node.right; //x
                     lnNode.right = denominator;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left = lnNode;
-                    mulNode.right=hardArgument(node.right);
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,lnNode);
                 }
                 break;
             }
@@ -292,11 +252,7 @@ public class Transform {
                     lnArgument.left = new Node(((Node) node.left).id);// a
                     denominator.right = lnArgument;
                     logNode.right = denominator;
-                    Node mulNode = new Node(Expressions.mul);
-                    mulNode.left = logNode;
-                    mulNode.right=hardArgument(node.right);
-                    resultNode = mulNode;
-                    previousNode = mulNode;
+                    resultNode = hardArgument(node.right,logNode);
                 }
                 break;
             }
@@ -344,10 +300,14 @@ public class Transform {
 
         return resultNode;
     }
-    public Node hardArgument(Node node) {
+    public Node hardArgument(Node node, Node leftNode) {
         Transform transform2 = new Transform();
         Node argumentNode = transform2.getByInOrder(node);
-        return argumentNode;
+        Node mulNode = new Node(Expressions.mul);
+        mulNode.left=leftNode;
+        mulNode.right=argumentNode;
+        previousNode = mulNode;
+        return mulNode;
     }
 
 }

@@ -15,6 +15,9 @@ public class Node<T> {
                 if( node.id != Expressions.digit) {
                     System.out.print(" " + (node.id.name()));
                 }
+                else {
+                    System.out.print(" " + ((Digit) node).value);
+                }
                 traverseInOrder(node.left);
                 traverseInOrder((Object)node.right);
             }

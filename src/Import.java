@@ -1,4 +1,3 @@
-import java.beans.Expression;
 import java.util.ArrayList;
 
 public class Import {
@@ -162,15 +161,16 @@ public class Import {
                     plusNode = new Node(expr);
                     i +=1;
                     if(previousNode != null) {
-                        plusNode.right = previousNode;
+                        plusNode.left = previousNode;
                     }
                     ptr = i;
-                    plusNode.left= convertAsciMathToSymbolic(text);
+                    plusNode.right= convertAsciMathToSymbolic(text);
                     previousNode = plusNode;
                     i = ptr;
-                    continue;
+                    break;
                 }
                 if(expr == Expressions.minus ) {
+
                     Node minusNode = new Node(expr);
                     i +=1;
                     if(previousNode != null) {
@@ -180,7 +180,7 @@ public class Import {
                     minusNode.right= convertAsciMathToSymbolic(text);
                     previousNode = minusNode;
                     i = ptr;
-                    continue;
+                    break;
 
                 }
                 if(expr == Expressions.pow) {

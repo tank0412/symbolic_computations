@@ -311,19 +311,11 @@ public class Transform {
                 Node minusleft = getByInOrder(node.right);
                 if(minusleft.id == Expressions.minus){
                     minusNode.id = Expressions.plus;
-                    minusleft.id = (((Node) minusleft.left).id);
-                    //((Node) minusleft).value = minusleft.left.value;
-                    try {
+                    if(minusleft.left != null) {
+                        minusleft.id = (((Node) minusleft.left).id);
+
                         ((Node) minusleft).right = ((Node) minusleft.left).right;
-                    }
-                    catch(Exception NullPointerException ) {
-                        ;
-                    }
-                    try{
                         ((Node) minusleft).left = ((Node) minusleft.left).left;
-                    }
-                    catch(Exception NullPointerException ) {
-                        ;
                     }
                 }
                 else {
@@ -331,19 +323,8 @@ public class Transform {
                         minusNode.id = Expressions.plus;
 
                         ((Node) minusleft.left).id = ((Node) ((Node) minusleft.left).left).id;
-                        //minusleft.left.value = minusleft.left.left.value;
-                        try {
-                            ((Node) minusleft.left).right = ((Node) ((Node) minusleft.left).left).right;
-                        }
-                        catch(Exception NullPointerException ) {
-                            ;
-                        }
-                        try{
-                            ((Node) minusleft.left).left = ((Node) ((Node) minusleft.left).left).left;
-                        }
-                        catch(Exception NullPointerException ) {
-                            ;
-                        }
+                        ((Node) minusleft.left).right = ((Node) ((Node) minusleft.left).left).right;
+                        ((Node) minusleft.left).left = ((Node) ((Node) minusleft.left).left).left;
                     }
                 }
                 minusNode.right= minusleft;

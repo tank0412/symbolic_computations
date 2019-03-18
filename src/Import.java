@@ -110,6 +110,12 @@ public class Import {
                     break;
 
                 }
+                if(expr == Expressions.mul ) {
+                    doJobForMathSymbol(expr,i,text);
+                    i = ptr;
+                    break;
+
+                }
                 if(expr == Expressions.x ) {
                     return new Node(Expressions.x);
 
@@ -203,11 +209,9 @@ public class Import {
                         }
                         z++;
                     }
-                    while((checkInput(text,z) != Expressions.openBracket && (text[z-1] != '/' && text[z] != 'x') ) && z < text.length );
-                    thirdArg[index] = '(';
+                    while(z < text.length&& text[z] != 0);
                     z++;
                     secondArg = addArgument(secondArg,firstArg);
-                    thirdArg = addArgument(thirdArg,firstArg);
                     Import importMy = new Import();
                     Node first = importMy.converttoSymbolic(secondArg);
                     Import importMy2 = new Import();
@@ -326,6 +330,9 @@ public class Import {
         if(text[i] == '/') {
             return Expressions.div;
         }
+        if(text[i] == '*') {
+            return Expressions.mul;
+        }
         if(text[i] == '(') {
             return Expressions.openBracket;
         }
@@ -362,7 +369,7 @@ public class Import {
             node.arguments.add(previousNode);
         }
         else {
-            if(checkInput(text, i-1) == Expressions.div) {
+            if(checkInput(text, i-1) == Expressions.div || checkInput(text, i-1) == Expressions.mul ) {
                 Digit digit = new Digit(text[i - 2] - '0'); // for div
                 node.arguments.add(digit);
             }

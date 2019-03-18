@@ -19,8 +19,17 @@ public class Transform {
             for (Node rule : Import.rules) {
                  if(expr.id == rule.arguments.get(0).id) {
                      expr.id = rule.arguments.get(1).id;
-                     for(int i = 0; i < expr.arguments.size(); ++ i) {
-                         expr.arguments.set(i, symbAlgo(expr.arguments.get(i)));
+                     int index = 0;
+                     for(Node node : rule.arguments  ) {
+                         if(index <expr.arguments.size() ) {
+                             expr.arguments.set(index, rule.arguments.get(1).arguments.get(index));
+                         }
+                         else {
+                             if(index <rule.arguments.get(1).arguments.size() ) {
+                                 expr.arguments.add(index, rule.arguments.get(1).arguments.get(index));
+                             }
+                         }
+                         index++;
                      }
                      break;
                  }

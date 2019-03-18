@@ -153,7 +153,8 @@ public class Import {
                         for(int c = q+2, index = 0; c <(i-1); ++c,++index){
                             subFunc[index] = text[c];
                         }
-                        powNode.arguments.add(convertAsciMathToSymbolic(subFunc));
+                        Import myImp = new Import();
+                        powNode.arguments.add(myImp.convertAsciMathToSymbolic(subFunc));
                         isPowAgain = false;
                         left = new Digit((int) (text[i+1] - '0'), powNode);
                         powNode.arguments.add(left);

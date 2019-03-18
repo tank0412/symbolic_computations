@@ -22,7 +22,7 @@ public class Parse {
             result.arguments.add(left);
             result.arguments.add(right);
             */
-            Node result = new Node(Expressions.sqrt);
+            Node result = new Node(Expressions.tg);
             result.arguments.add(new Node(Expressions.x, result));
             return result;
         } else {

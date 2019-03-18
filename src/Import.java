@@ -252,11 +252,12 @@ public class Import {
             if(checkInput(text,c) == Expressions.openBracket){
                 startBracket++;
             }
-            if((startBracket==endBracket && startBracket != 0) || text[c] == 0 ) {
+            if(c >= text.length||text[c] == 0 || (startBracket==endBracket && startBracket != 0)) {
                 //subFunc[index] = text[c];
                 //index++;
                 break;
             }
+            if(checkInput(text,c) != Expressions.closeBracket)
             subFunc[index] = text[c];
         }
         Import import2 = new Import();
@@ -273,7 +274,7 @@ public class Import {
         }
 
         if(i +1 < text.length) {
-            if (text[i] == 'x' && (text[i + 1] != '*') && text[i + 1] != 't') { //x only
+            if (text[i] == 'x' && text[i + 1] != '*' && text[i + 1] != 't' && ( text[i + 1] != ')' && text[i + 1] != '^' ) ) { //x only
                 return Expressions.x;
             }
         }
@@ -402,7 +403,7 @@ public class Import {
             node.arguments.add(previousNode);
         }
         else {
-            if(checkInput(text, i-1) == Expressions.div || checkInput(text, i-1) == Expressions.mul ) {
+            if(checkInput(text, i-1) == Expressions.div || checkInput(text, i-1) == Expressions.mul|| checkInput(text, i-1) == Expressions.plus ) {
                 if(Character.isDigit(text[i - 2] ) == true) {
                     Digit digit = new Digit(text[i - 2] - '0'); // for div
                     node.arguments.add(digit);

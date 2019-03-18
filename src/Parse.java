@@ -16,7 +16,6 @@ public class Parse {
         String expr = reader.nextLine();
         return expr.toCharArray();
     }
-
     Node getContext() {
         if (context == null) {
             System.out.println("Using a default context");
@@ -29,14 +28,13 @@ public class Parse {
             result.arguments.add(left);
             result.arguments.add(right);
             */
-            /*
-            Node result = new Node(Expressions.tg);
+            Node result = new Node(Expressions.arctg);
             result.arguments.add(new Node(Expressions.x, result));
-            */
+            /*
             Node result = new Node(Expressions.log);
             result.arguments.add(new Node(Expressions.a, result));
             result.arguments.add(new Node(Expressions.x, result));
-
+            */
             return result;
         } else {
             return context;

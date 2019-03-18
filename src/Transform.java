@@ -3,7 +3,7 @@ public class Transform {
     private  Node context;
     public Node derivate(Node symb) {
         Node derivatedNode = null;
-        if(Import.rules == null) {
+        if(Import.rules.size() == 0) {
             derivatedNode = getByInOrder(symb);
             return derivatedNode;
         }

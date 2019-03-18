@@ -22,7 +22,12 @@ public class Parse {
             result.arguments.add(left);
             result.arguments.add(right);
             */
+            /*
             Node result = new Node(Expressions.tg);
+            result.arguments.add(new Node(Expressions.x, result));
+            */
+            Node result = new Node(Expressions.log);
+            result.arguments.add(new Node(Expressions.a, result));
             result.arguments.add(new Node(Expressions.x, result));
             return result;
         } else {

@@ -240,7 +240,7 @@ public class Import {
             if(checkInput(text,c) == Expressions.openBracket){
                 startBracket++;
             }
-            if(startBracket==endBracket && startBracket != 0 ) {
+            if((startBracket==endBracket && startBracket != 0) || text[c] == 0 ) {
                 //subFunc[index] = text[c];
                 //index++;
                 break;
@@ -260,8 +260,15 @@ public class Import {
             return Expressions.sin;
         }
 
-        if(text[i] == 'x' ) { //x only
-            return Expressions.x;
+        if(i +1 < text.length) {
+            if (text[i] == 'x' && text[i + 1] != '*') { //x only
+                return Expressions.x;
+            }
+        }
+        else {
+            if (text[i] == 'x') { //x only
+                return Expressions.x;
+            }
         }
 
         if(text[i] == '^' && Character.isDigit(text[i + 1]) ) {//pow
@@ -358,7 +365,13 @@ public class Import {
 
         }
         else{
-            hardArgument(text,i,sinNode);
+            if(checkInput(text,i) == Expressions.a) {
+                sinNode.arguments.add(new Node(Expressions.a,sinNode ));
+
+            }
+            else {
+                hardArgument(text, i, sinNode);
+            }
         }
         previousNode = sinNode;
     }
@@ -371,8 +384,16 @@ public class Import {
         }
         else {
             if(checkInput(text, i-1) == Expressions.div || checkInput(text, i-1) == Expressions.mul ) {
-                Digit digit = new Digit(text[i - 2] - '0'); // for div
-                node.arguments.add(digit);
+                if(Character.isDigit(text[i - 2] ) == true) {
+                    Digit digit = new Digit(text[i - 2] - '0'); // for div
+                    node.arguments.add(digit);
+                }
+                else{
+                    char[] array = new char[1];
+                    array[0] = text[i-2];
+                    Node node2 = new Node(checkInput(array, 0));
+                    node.arguments.add(node2);
+                }
             }
         }
         ptr = i;

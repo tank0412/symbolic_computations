@@ -1,9 +1,13 @@
+import java.util.ArrayList;
+
 public class Import {
     private int ptr = 0;
     private boolean isPowAgain = false;
     private Node sinNode;
     private Node previousNode;
+    public static ArrayList<Node> rules;
     public Node converttoSymbolic(char[] text) {
+        rules = new ArrayList<Node>();
         Node node = convertAsciMathToSymbolic(text);
         return node;
 
@@ -140,10 +144,75 @@ public class Import {
                         previousNode = powNode;
                     }
                 }
+                if(expr == Expressions.Assume) {
+                    char[] firstArg = new char[100];
+                    char[] secondArg = new char[100];
+                    char[] thirdArg = new char[100];
+                    int index = 0;
+                    int z = i+2;
+                    do{
+                        if(text[z] != ' ') {
+                            firstArg[index] = text[z];
+                            index++;
+                        }
+                        z++;
+                    }
+                    while(checkInput(text,z) != Expressions.separator);
+                    index = 0;
+                    z++;
+                    do{
+                        if(text[z] != ' ') {
+                            secondArg[index] = text[z];
+                            index++;
+                        }
+                        z++;
+                    }
+                    while(checkInput(text,z) != Expressions.openBracket);
+                    secondArg[index] = '(';
+                    z++;
+                    for(int x = z, myindex=0; x < text.length; ++ x, ++myindex) {
+                        if(firstArg[index] != 0) {
+                            z++;
+                            continue;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                    do {
+                        z++;
+                    }
+                    while(checkInput(text,z) != Expressions.arrrow);
+                    z+=3;
+                    //z+= firstArg.length + 1;
+                    index = 0;
+                    do {
+                        if(text[z] != ' ') {
+                            thirdArg[index] = text[z];
+                            index++;
+                        }
+                        z++;
+                    }
+                    while(checkInput(text,z) != Expressions.openBracket );
+                    thirdArg[index] = '(';
+                    z++;
+                    secondArg = addArgument(secondArg,firstArg);
+                    thirdArg = addArgument(thirdArg,firstArg);
+                    Import importMy = new Import();
+                    Node first = importMy.converttoSymbolic(secondArg);
+                    Import importMy2 = new Import();
+                    Node second = importMy2.converttoSymbolic(thirdArg);
+                    Node rule = new Node(Expressions.Rule);
+                    first.parent=rule;
+                    second.parent=rule;
+                    rule.arguments.add(first);
+                    rule.arguments.add(second);
+                    rules.add(rule);
+
+                }
                 }
         }
-
-        return  previousNode;
+             return previousNode;
     }
     private void hardArgument(char[] text,int i, Node node) {
         int startBracket, endBracket;
@@ -228,6 +297,15 @@ public class Import {
             ptr+=2;
             return Expressions.log;
         }
+        if(text[i] == 'd' && text[i + 1] == '(') { //d(
+            ptr+=1;
+            return Expressions.Assume;
+        }
+
+        if(text[i] == '-' && text[i + 1] == '>') { //->
+            ptr+=1;
+            return Expressions.arrrow;
+        }
 
         if(text[i] == '+') {
             return Expressions.plus;
@@ -246,6 +324,9 @@ public class Import {
         }
         if(text[i] == 'a') {
             return Expressions.a; //a
+        }
+        if(text[i] == ',') {
+            return Expressions.separator; //,
         }
         return null;
     
@@ -270,5 +351,24 @@ public class Import {
         ptr = i;
         node.arguments.add(convertAsciMathToSymbolic(text));
         previousNode = node;
+    }
+    public char[] addArgument(char[] func, char[] arg) {
+        int i;
+        for(i= 0; i < func.length; ++i) {
+            if(func[i] == 0) {
+                for(int j = 0; j < arg.length; ++j) {
+                    if(arg[j] != 0) {
+                        func[i] = arg[j];
+                        i++;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        func[i] = ')';
+        return  func;
     }
 }

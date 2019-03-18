@@ -1,9 +1,33 @@
 public class Transform {
     private Node previousNode;
+    private  Node context;
     public Node derivate(Node symb) {
-        Node derivatedNode = getByInOrder(symb);
-        return derivatedNode;
+        Node derivatedNode = null;
+        if(Import.rules == null) {
+            derivatedNode = getByInOrder(symb);
+            return derivatedNode;
+        }
+        else {
+            Parse parse = new Parse();
+            context = parse.getContext();
+            symbAlgo(context);
+            return  context;
+        }
     }
+
+    private Node symbAlgo(Node expr) {
+            for (Node rule : Import.rules) {
+                 if(expr.id == rule.arguments.get(0).id) {
+                     expr.id = rule.arguments.get(1).id;
+                     for(int i = 0; i < expr.arguments.size(); ++ i) {
+                         expr.arguments.set(i, symbAlgo(expr.arguments.get(i)));
+                     }
+                     break;
+                 }
+            }
+            return expr;
+    }
+
     private Node getByInOrder(Node node){
         Node resultNode = null;
         switch(node.id) {

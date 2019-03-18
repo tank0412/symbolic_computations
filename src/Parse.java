@@ -4,7 +4,14 @@ public class Parse {
     static Node context = null;
 
     char[] getInput() {
-        System.out.println("Enter  an expression");
+        System.out.println("Enter  an expression Or Symbolic Algo");
+        Scanner reader = new Scanner(System.in);
+        String expr = reader.nextLine();
+        return expr.toCharArray();
+    }
+
+    char[] getInputAgain() {
+        System.out.println("Context is changed. Enter algo now");
         Scanner reader = new Scanner(System.in);
         String expr = reader.nextLine();
         return expr.toCharArray();
@@ -29,6 +36,7 @@ public class Parse {
             Node result = new Node(Expressions.log);
             result.arguments.add(new Node(Expressions.a, result));
             result.arguments.add(new Node(Expressions.x, result));
+
             return result;
         } else {
             return context;

@@ -9,6 +9,12 @@ class Symbolic {
         text = parse.getInput(); // get char array after input
         Import import_mine = new Import();
         importedNode = import_mine.converttoSymbolic(text);// convert char to node (internal symbolic view)
+        if(importedNode.id == Expressions.context) {
+            Parse.context = importedNode.arguments.get(0);
+            text = parse.getInputAgain();
+            Import import_mine2 = new Import();
+            importedNode = import_mine2.converttoSymbolic(text);
+        }
         if(Import.rules == null) {
             write.writeNode(importedNode);
         }

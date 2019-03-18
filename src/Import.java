@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Import {
     private int ptr = 0;
@@ -25,6 +26,17 @@ public class Import {
             }
             expr = checkInput(text,i);
             if(expr!= null) {
+                if(expr == Expressions.context) {
+                    char[] expr2 = new char[100];
+                    expr2 = Arrays.copyOfRange(text, i, text.length);
+                    Node context = convertAsciMathToSymbolic(expr2);
+                    if(context != null) {
+                        Parse.context = context;
+                    }
+                    Node node = new Node(expr);
+                    node.arguments.add(context);
+                    return node;
+                }
                 if(expr == Expressions.sin ||expr == Expressions.cos||expr == Expressions.ctg) {
                     sinNode = new Node(expr);
                     previousNode = sinNode;
@@ -261,7 +273,7 @@ public class Import {
         }
 
         if(i +1 < text.length) {
-            if (text[i] == 'x' && text[i + 1] != '*') { //x only
+            if (text[i] == 'x' && (text[i + 1] != '*') && text[i + 1] != 't') { //x only
                 return Expressions.x;
             }
         }
@@ -322,6 +334,13 @@ public class Import {
         if(text[i] == 'd' && text[i + 1] == '(') { //d(
             ptr+=1;
             return Expressions.Assume;
+        }
+
+        if(i+6 < text.length) {
+            if (text[i] == 'c' && text[i + 1] == 'o' && text[i + 2] == 'n' && text[i + 3] == 't' && text[i + 4] == 'e' && text[i + 5] == 'x' && text[i + 6] == 't') {//context
+                ptr += 6;
+                return Expressions.context;
+            }
         }
 
         if(text[i] == '-' && text[i + 1] == '>') { //->

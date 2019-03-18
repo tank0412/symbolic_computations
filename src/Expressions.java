@@ -24,5 +24,6 @@ public enum Expressions{
     separator,
     arrrow,
     Assume,
-    Rule
+    Rule,
+    context
 }

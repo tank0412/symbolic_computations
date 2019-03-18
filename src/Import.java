@@ -25,13 +25,8 @@ public class Import {
                     sinNode = new Node(expr);
                     previousNode = sinNode;
                     i +=4;
-                    if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(Expressions.x );
-                        i++;
-                    }
-                    else{
-                        hardArgument(text,i,sinNode);
-                    }
+                    checkX(text,i);
+                    ++i;
                 }
                 if(expr == Expressions.tg) {
                     sinNode = new Node(expr);
@@ -44,14 +39,8 @@ public class Import {
                     sinNode = new Node(expr);
                     previousNode = sinNode;
                     i +=7;
-                    if(checkInput(text,i) == Expressions.x) {
-                        sinNode.right=new Node(Expressions.x );
-                        i++;
-
-                    }
-                    else {
-                        hardArgument(text,i,sinNode);
-                    }
+                    checkX(text,i);
+                    ++i;
                 }
                 if(expr == Expressions.arctg ) {
                     sinNode = new Node(expr);
@@ -75,9 +64,10 @@ public class Import {
                     Node logNode = new Node(expr);
                     i +=4;
                     if(checkInput(text,i) == Expressions.a) {
-                        logNode.left = new Node(Expressions.a);
+                        logNode.arguments.add(new Node(Expressions.a, logNode ));
                     }
                     i+=2;
+                    sinNode=logNode;
                     checkX(text,i);
                     ++i;
                     previousNode = logNode;
@@ -85,9 +75,9 @@ public class Import {
                 if(expr == Expressions.exponent ) {
                     Node exprNode = new Node(Expressions.pow);
                     i +=3;
-                    exprNode.left = new Node(Expressions.exponent);
+                    exprNode.arguments.add(new Node(Expressions.exponent, exprNode ));
                     if(checkInput(text,i) == Expressions.x) {
-                        exprNode.right=new Node(Expressions.x );
+                        exprNode.arguments.add(new Node(Expressions.x, exprNode ));
                         i++;
                         if(checkInput(text,i) == Expressions.closeBracket ) {
                             ;
@@ -130,9 +120,9 @@ public class Import {
                     }
                     if(((i-1) - (q+1)) == 2){  // значит это (x)
                         powNode = new Node(Expressions.pow );
-                        powNode.right = new Node(Expressions.x);
-                        left = new Digit((int) (text[i+1] - '0'));
-                        powNode.left = left;
+                        powNode.arguments.add(new Node(Expressions.x, powNode ));
+                        left = new Digit((int) (text[i+1] - '0'), powNode);
+                        powNode.arguments.add(left);
                         previousNode = powNode;
                     }
                     else{
@@ -143,10 +133,10 @@ public class Import {
                         for(int c = q+2, index = 0; c <(i-1); ++c,++index){
                             subFunc[index] = text[c];
                         }
-                        powNode.right = convertAsciMathToSymbolic(subFunc);
+                        powNode.arguments.add(convertAsciMathToSymbolic(subFunc));
                         isPowAgain = false;
-                        left = new Digit((int) (text[i+1] - '0'));
-                        powNode.left = left;
+                        left = new Digit((int) (text[i+1] - '0'), powNode);
+                        powNode.arguments.add(left);
                         previousNode = powNode;
                     }
                 }
@@ -159,7 +149,6 @@ public class Import {
         int startBracket, endBracket;
         char subFunc[] = new char[100];
         startBracket = 0; endBracket = 0;
-        startBracket++;
         for(int c = i, index = 0; ; ++c,++index){
             if(checkInput(text,c) == Expressions.closeBracket){
                 endBracket++;
@@ -176,7 +165,8 @@ public class Import {
         }
         Import import2 = new Import();
         Node argumentNode = import2.convertAsciMathToSymbolic(subFunc);
-        node.right = argumentNode;
+        argumentNode.parent = node;
+        node.arguments.add(argumentNode);
         previousNode = node;
     }
     private Expressions checkInput(char[] text, int i) {
@@ -262,7 +252,7 @@ public class Import {
     }
     private void checkX(char[] text, int i) {
         if(checkInput(text,i) == Expressions.x) {
-            sinNode.right=new Node(Expressions.x );
+            sinNode.arguments.add(new Node(Expressions.x,sinNode ));
 
         }
         else{
@@ -274,10 +264,11 @@ public class Import {
         Node node = new Node(expr);
         i +=1;
         if(previousNode != null) {
-            node.left = previousNode;
+            previousNode.parent=node;
+            node.arguments.add(previousNode);
         }
         ptr = i;
-        node.right= convertAsciMathToSymbolic(text);
+        node.arguments.add(convertAsciMathToSymbolic(text));
         previousNode = node;
     }
 }

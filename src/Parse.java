@@ -25,7 +25,7 @@ public class Parse {
             left.arguments.add(new Node(Expressions.x, left));
             Node right = new Node(Expressions.cos, result);
             right.arguments.add(new Node(Expressions.x, right));
-            result.arguments.add(left);d(x,arcsin(x)) -> 1/(sqrt(1-(x)^2))
+            result.arguments.add(left);
             result.arguments.add(right);
             */
             Node result = new Node(Expressions.arccos);

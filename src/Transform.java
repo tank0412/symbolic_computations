@@ -1,6 +1,7 @@
 public class Transform {
     private Node previousNode;
     private  Node context;
+    private Node hardDerivative = null;
     public Node derivate(Node symb) {
         Node derivatedNode = null;
         if(Import.rules.size() == 0) {
@@ -16,17 +17,24 @@ public class Transform {
     }
 
     private Node symbAlgo(Node expr) {
+        if(hardDerivative !=null) {
+            expr = traverseExpr(expr);
+            hardDerivative = null;
+        }
             for (Node rule : Import.rules) {
                  if(expr.id == rule.arguments.get(0).id) {
+                     if(expr.arguments.get(0).id != Expressions.x) {
+                         hardDerivative=expr.arguments.get(0);
+                     }
                      expr.id = rule.arguments.get(1).id;
                      int index = 0;
                      for(Node node : rule.arguments  ) {
                          if(index <expr.arguments.size() ) {
-                             expr.arguments.set(index, rule.arguments.get(1).arguments.get(index));
+                             expr.arguments.set(index, symbAlgo(rule.arguments.get(1).arguments.get(index)));
                          }
                          else {
                              if(index <rule.arguments.get(1).arguments.size() ) {
-                                 expr.arguments.add(index, rule.arguments.get(1).arguments.get(index));
+                                 expr.arguments.add(index, symbAlgo(rule.arguments.get(1).arguments.get(index)));
                              }
                          }
                          index++;
@@ -35,6 +43,18 @@ public class Transform {
                  }
             }
             return expr;
+    }
+    public Node traverseExpr(Node expr) {
+        int index = 0;
+        if(expr.id == Expressions.x) {
+            expr = hardDerivative;
+            return expr;
+        }
+        for(Node node : expr.arguments  ) {
+            expr.arguments.set(index, traverseExpr(node));
+            index++;
+        }
+        return expr;
     }
 
     private Node getByInOrder(Node node){

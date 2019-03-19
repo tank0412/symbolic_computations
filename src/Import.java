@@ -8,7 +8,6 @@ public class Import {
     private Node previousNode;
     public static ArrayList<Node> rules;
     public Node converttoSymbolic(char[] text) {
-        rules = new ArrayList<Node>();
         Node node = convertAsciMathToSymbolic(text);
         return node;
 

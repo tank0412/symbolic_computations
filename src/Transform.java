@@ -19,7 +19,13 @@ public class Transform {
     private Node symbAlgo(Node expr) {
         if(hardDerivative !=null) {
             expr = traverseExpr(expr);
+            Node hardDer = hardDerivative;
             hardDerivative = null;
+            Node mul = new Node(Expressions.mul);
+            expr.parent=mul;
+            mul.arguments.add(expr);
+            mul.arguments.add(symbAlgo(hardDer));
+            expr = mul;
         }
             for (Node rule : Import.rules) {
                  if(expr.id == rule.arguments.get(0).id) {

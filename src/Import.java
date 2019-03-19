@@ -244,7 +244,7 @@ public class Import {
     private void hardArgument(char[] text,int i, Node node) {
         int startBracket, endBracket;
         char subFunc[] = new char[100];
-        startBracket = 0; endBracket = 0;
+        startBracket = 1; endBracket = 0;
         for(int c = i, index = 0; ; ++c,++index){
             if(checkInput(text,c) == Expressions.closeBracket){
                 endBracket++;
@@ -252,13 +252,17 @@ public class Import {
             if(checkInput(text,c) == Expressions.openBracket){
                 startBracket++;
             }
+
+            if(checkInput(text,c) != Expressions.closeBracket || (startBracket!=endBracket)) {
+                subFunc[index] = text[c];
+            }
+
             if(c >= text.length||text[c] == 0 || (startBracket==endBracket && startBracket != 0)) {
                 //subFunc[index] = text[c];
                 //index++;
+                ptr = c;
                 break;
             }
-            if(checkInput(text,c) != Expressions.closeBracket)
-            subFunc[index] = text[c];
         }
         Import import2 = new Import();
         Node argumentNode = import2.convertAsciMathToSymbolic(subFunc);
@@ -403,16 +407,17 @@ public class Import {
             node.arguments.add(previousNode);
         }
         else {
-            if(checkInput(text, i-1) == Expressions.div || checkInput(text, i-1) == Expressions.mul|| checkInput(text, i-1) == Expressions.plus ) {
-                if(Character.isDigit(text[i - 2] ) == true) {
-                    Digit digit = new Digit(text[i - 2] - '0'); // for div
-                    node.arguments.add(digit);
-                }
-                else{
-                    char[] array = new char[1];
-                    array[0] = text[i-2];
-                    Node node2 = new Node(checkInput(array, 0));
-                    node.arguments.add(node2);
+            if(checkInput(text, i-1) == Expressions.div || checkInput(text, i-1) == Expressions.mul|| checkInput(text, i-1) == Expressions.plus|| checkInput(text, i-1) == Expressions.minus  ) {
+                if(i-2 >=0) {
+                    if (Character.isDigit(text[i - 2]) == true) {
+                        Digit digit = new Digit(text[i - 2] - '0'); // for div
+                        node.arguments.add(digit);
+                    } else {
+                        char[] array = new char[1];
+                        array[0] = text[i - 2];
+                        Node node2 = new Node(checkInput(array, 0));
+                        node.arguments.add(node2);
+                    }
                 }
             }
         }

@@ -8,7 +8,6 @@ public class Import {
     private Node previousNode;
     public static ArrayList<Node> rules;
     public Node converttoSymbolic(char[] text) {
-        rules = new ArrayList<Node>();
         Node node = convertAsciMathToSymbolic(text);
         return node;
 
@@ -212,7 +211,7 @@ public class Import {
                         z++;
                     }
                     while(checkInput(text,z) != Expressions.arrrow);
-                    z+=3;
+                    z+=2;
                     //z+= firstArg.length + 1;
                     index = 0;
                     do {
@@ -222,7 +221,7 @@ public class Import {
                         }
                         z++;
                     }
-                    while(z < text.length&& text[z] != 0);
+                    while(z < text.length&& text[z] != 0 && checkInput(text,z) != Expressions.Assume );
                     z++;
                     secondArg = addArgument(secondArg,firstArg);
                     Import importMy = new Import();

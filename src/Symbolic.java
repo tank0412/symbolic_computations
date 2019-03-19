@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 class Symbolic {
     public static void main(String[] args) {
         char[] text = new char[100];

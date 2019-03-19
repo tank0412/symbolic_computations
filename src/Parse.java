@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Parse {
@@ -8,7 +7,6 @@ public class Parse {
         System.out.println("Enter  an expression Or Symbolic Algo");
         Scanner reader = new Scanner(System.in);
         String expr = reader.nextLine();
-        Import.rules= new ArrayList<Node>();
         return expr.toCharArray();
     }
 

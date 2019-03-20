@@ -25,11 +25,11 @@ public class Transform {
                      int index = 0;
                      for(Node node : rule.arguments  ) {
                          if(index <expr.arguments.size() ) {
-                             expr.arguments.set(index, symbAlgo(rule.arguments.get(1).arguments.get(index)));
+                             expr.arguments.set(index, rule.arguments.get(1).arguments.get(index));
                          }
                          else {
                              if(index <rule.arguments.get(1).arguments.size() ) {
-                                 expr.arguments.add(index, symbAlgo(rule.arguments.get(1).arguments.get(index)));
+                                 expr.arguments.add(index,rule.arguments.get(1).arguments.get(index));
                              }
                          }
                          index++;
@@ -83,16 +83,22 @@ public class Transform {
             Node secondPart = context.arguments.get(1);
             firstPart = symbAlgo(firstPart);
             Node hard = forHardDeriv(firstPart);
-            if(hard != null) {
+            if (hard != null) {
                 firstPart = hard;
             }
-            secondPart = symbAlgo(secondPart);
-            hard = forHardDeriv(secondPart);
-            if(hard != null) {
-                secondPart = hard;
+            context.arguments.set(0, firstPart);
+
+            if (secondPart.id == Expressions.plus || secondPart.id == Expressions.minus) {
+               secondPart = traverseContext(secondPart);
+               context.arguments.set(1, secondPart);
+            } else {
+                secondPart = symbAlgo(secondPart);
+                hard = forHardDeriv(secondPart);
+                if (hard != null) {
+                    secondPart = hard;
+                }
+                context.arguments.set(1, secondPart);
             }
-            context.arguments.set(0,firstPart);
-            context.arguments.set(1,secondPart);
         }
         return context;
     }

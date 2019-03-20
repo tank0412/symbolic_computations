@@ -11,24 +11,11 @@ public class Transform {
         else {
             Parse parse = new Parse();
             context = parse.getContext();
-            context = symbAlgo(context);
-            return context;
+            return traverseContext(context);
         }
     }
 
     private Node symbAlgo(Node expr) {
-        if(hardDerivative !=null) {
-            expr = traverseExpr(expr);
-            Node hardDer = hardDerivative;
-            hardDerivative = null;
-            Node mul = new Node(Expressions.mul);
-            expr.parent=mul;
-            mul.arguments.add(expr);
-            Transform mytransofrm = new Transform();
-            Node hardDerivate = mytransofrm.symbAlgo(hardDer);
-            mul.arguments.add(hardDerivate);
-            return mul;
-        }
             for (Node rule : Import.rules) {
                  if(expr.id == rule.arguments.get(0).id) {
                      if(expr.arguments.get(0).id != Expressions.x) {
@@ -52,6 +39,23 @@ public class Transform {
             }
             return expr;
     }
+    public Node forHardDeriv(Node expr) {
+        Node mul = null;
+        if(hardDerivative !=null) {
+            expr = traverseExpr(expr);
+            Node hardDer = hardDerivative;
+            hardDerivative = null;
+            mul = new Node(Expressions.mul);
+            expr.parent=mul;
+            mul.arguments.add(expr);
+            Transform mytransofrm = new Transform();
+            Node hardDerivate = mytransofrm.symbAlgo(hardDer);
+            mul.arguments.add(hardDerivate);
+            hardDerivative= hardDer;
+            return mul;
+        }
+        return mul;
+    }
 
     public Node traverseExpr(Node expr) {
         int index = 0;
@@ -65,6 +69,32 @@ public class Transform {
             index++;
         }
         return expr;
+    }
+    public Node traverseContext(Node context) {
+        if(context.id != Expressions.plus && context.id != Expressions.minus  ) {
+            context = symbAlgo(context);
+            Node hard = forHardDeriv(context);
+            if(hard != null) {
+                context = hard;
+            }
+        }
+        else {
+            Node firstPart = context.arguments.get(0);
+            Node secondPart = context.arguments.get(1);
+            firstPart = symbAlgo(firstPart);
+            Node hard = forHardDeriv(firstPart);
+            if(hard != null) {
+                firstPart = hard;
+            }
+            secondPart = symbAlgo(secondPart);
+            hard = forHardDeriv(secondPart);
+            if(hard != null) {
+                secondPart = hard;
+            }
+            context.arguments.set(0,firstPart);
+            context.arguments.set(1,secondPart);
+        }
+        return context;
     }
 
     private Node getByInOrder(Node node){

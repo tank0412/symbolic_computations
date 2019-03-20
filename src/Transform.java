@@ -1,8 +1,8 @@
 public class Transform {
     private Node previousNode;
-    private  Node context;
     private Node hardDerivative = null;
     public Node derivate(Node symb) {
+        Node context;
         Node derivatedNode = null;
         if(Import.rules.size() == 0) {
             derivatedNode = getByInOrder(symb);
@@ -11,15 +11,23 @@ public class Transform {
         else {
             Parse parse = new Parse();
             context = parse.getContext();
-            symbAlgo(context);
-            return  context;
+            context = symbAlgo(context);
+            return context;
         }
     }
 
     private Node symbAlgo(Node expr) {
         if(hardDerivative !=null) {
             expr = traverseExpr(expr);
+            Node hardDer = hardDerivative;
             hardDerivative = null;
+            Node mul = new Node(Expressions.mul);
+            expr.parent=mul;
+            mul.arguments.add(expr);
+            Transform mytransofrm = new Transform();
+            Node hardDerivate = mytransofrm.symbAlgo(hardDer);
+            mul.arguments.add(hardDerivate);
+            return mul;
         }
             for (Node rule : Import.rules) {
                  if(expr.id == rule.arguments.get(0).id) {
@@ -44,10 +52,12 @@ public class Transform {
             }
             return expr;
     }
+
     public Node traverseExpr(Node expr) {
         int index = 0;
         if(expr.id == Expressions.x) {
-            expr = hardDerivative;
+            Node getHardDeriv = hardDerivative.traverseInOrderCopy(hardDerivative);
+            expr = getHardDeriv;
             return expr;
         }
         for(Node node : expr.arguments  ) {

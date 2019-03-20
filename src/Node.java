@@ -31,25 +31,15 @@ public class Node {
                 }
             }
     }
-    public void traverseInOrder(Object object) {
-        if(object == null) {
-                return;
-    }
-        if( ((Node)object).id != Expressions.digit) {
-            System.out.print(" " + ((Node) object).id.name());
-            for(Node node2: ((Node)object).arguments) {
-                traverseInOrder(node2);
-            }
-            return;
+    public Node traverseInOrderCopy(Node focusNode) {
+        if (focusNode == null) {
+            return null;
         }
-        else {
-            System.out.print(" " + ((Digit) object).value);
-            for(Node node2: ((Node)object).arguments) {
-                traverseInOrder(node2);
-            }
-            return;
+        Node copy = new Node(focusNode.id, focusNode.parent);
+        for(Node node2: focusNode.arguments) {
+            copy.arguments.add(traverseInOrderCopy(node2));
         }
-
+        return copy;
     }
 }
 class Digit extends Node {

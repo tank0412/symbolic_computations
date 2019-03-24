@@ -15,228 +15,287 @@ public class Import {
     private Node convertAsciMathToSymbolic(char[] text) {
         Node powNode;
         Expressions expr;
-        Node left;
+        Node left = null;
         for(int i = ptr; i < text.length; ++i) {
             if(i < ptr){
                 i=ptr;
             }
-            if(i >= text.length || text[i] == 0 ) {
+            if(i >= text.length -1 || text[i] == 0 ) {
                 break;
             }
             expr = checkInput(text,i);
             if(expr!= null) {
-                if(expr == Expressions.context) {
+                if (expr == Expressions.context) {
                     char[] expr2 = new char[100];
-                    expr2 = Arrays.copyOfRange(text, i, text.length);
-                    Node context = convertAsciMathToSymbolic(expr2);
-                    if(context != null) {
+                    expr2 = Arrays.copyOfRange(text, ptr+2, text.length);
+                    Import contextImport = new Import();
+                    Node context = contextImport.convertAsciMathToSymbolic(expr2);
+                    ptr+=expr2.length +1;
+                    if (context != null) {
                         Parse.context = context;
                     }
                     Node node = new Node(expr);
                     node.arguments.add(context);
                     return node;
                 }
-                if(expr == Expressions.sin ||expr == Expressions.cos||expr == Expressions.ctg) {
-                    sinNode = new Node(expr);
-                    previousNode = sinNode;
-                    i +=4;
-                    checkX(text,i);
-                    ++i;
-                }
-                if(expr == Expressions.tg) {
-                    sinNode = new Node(expr);
-                    previousNode = sinNode;
-                    i +=3;
-                    checkX(text,i);
-                    ++i;
-                }
-                if(expr == Expressions.arcsin ||expr == Expressions.arccos||expr == Expressions.arcctg ) {
-                    sinNode = new Node(expr);
-                    previousNode = sinNode;
-                    i +=7;
-                    checkX(text,i);
-                    ++i;
-                }
-                if(expr == Expressions.arctg ) {
-                    sinNode = new Node(expr);
-                    i +=6;
-                    checkX(text,i);
-                    ++i;
-                }
-                if(expr == Expressions.sqrt ) {
-                    sinNode = new Node(expr);
-                    i +=5;
-                    checkX(text,i);
-                    ++i;
-                }
-                if(expr == Expressions.ln ) {
-                    sinNode = new Node(expr);
-                    i +=3;
-                    checkX(text,i);
-                    ++i;
-                }
-                if(expr == Expressions.log ) {
-                    Node logNode = new Node(expr);
-                    i +=4;
-                    if(checkInput(text,i) == Expressions.a) {
-                        logNode.arguments.add(new Node(Expressions.a, logNode ));
+                if(expr==Expressions.digit) {
+                    if (Character.isDigit(text[i])) {
+                        Digit digit = new Digit((int) (text[i])-'0');
+                        previousNode = digit;
                     }
-                    i+=2;
-                    sinNode=logNode;
-                    checkX(text,i);
+                }
+                if (expr == Expressions.sin || expr == Expressions.cos || expr == Expressions.ctg) {
+                    sinNode = new Node(expr);
+                    previousNode = sinNode;
+                    i += 4;
+                    checkX(text, i);
                     ++i;
+                }
+                if (expr == Expressions.tg) {
+                    sinNode = new Node(expr);
+                    previousNode = sinNode;
+                    i += 3;
+                    checkX(text, i);
+                    ++i;
+                }
+                if (expr == Expressions.arcsin || expr == Expressions.arccos || expr == Expressions.arcctg) {
+                    sinNode = new Node(expr);
+                    previousNode = sinNode;
+                    i += 7;
+                    checkX(text, i);
+                    ++i;
+                }
+                if (expr == Expressions.arctg) {
+                    sinNode = new Node(expr);
+                    i += 6;
+                    checkX(text, i);
+                    ++i;
+                }
+                if (expr == Expressions.sqrt) {
+                    sinNode = new Node(expr);
+                    i += 5;
+                    checkX(text, i);
+                    ++i;
+                }
+                if (expr == Expressions.ln) {
+                    sinNode = new Node(expr);
+                    i += 3;
+                    checkX(text, i);
+                    ++i;
+                }
+                if (expr == Expressions.log) {
+                    Node logNode = new Node(expr);
+                    i += 4;
+                    Node aNode = null;
+                    if (checkInput(text, i) == Expressions.a) {
+                        aNode = new Node(Expressions.a, logNode);
+                    }
+                    i += 2;
+                    sinNode = logNode;
+                    checkX(text, i);
+                    ++i;
+                    if(aNode != null) {
+                        logNode.arguments.add(aNode);
+                    }
                     previousNode = logNode;
                 }
-                if(expr == Expressions.exponent ) {
+                if (expr == Expressions.exponent) {
                     Node exprNode = new Node(Expressions.pow);
-                    i +=3;
-                    exprNode.arguments.add(new Node(Expressions.exponent, exprNode ));
-                    if(checkInput(text,i) == Expressions.x) {
-                        exprNode.arguments.add(new Node(Expressions.x, exprNode ));
+                    i += 3;
+                    exprNode.arguments.add(new Node(Expressions.exponent, exprNode));
+                    if (checkInput(text, i) == Expressions.x) {
+                        exprNode.arguments.add(new Node(Expressions.x, exprNode));
                         i++;
-                        if(checkInput(text,i) == Expressions.closeBracket ) {
+                        if (checkInput(text, i) == Expressions.closeBracket) {
                             ;
                         }
 
-                    }
-                    else{
-                        hardArgument(text,i,exprNode);
+                    } else {
+                        hardArgument(text, i, exprNode);
                     }
                     previousNode = exprNode;
                 }
-                if(expr == Expressions.plus ) {
-                    doJobForMathSymbol(expr,i,text);
+                if (expr == Expressions.plus) {
+                    doJobForMathSymbol(expr, i, text);
                     i = ptr;
                     break;
                 }
-                if(expr == Expressions.minus ) {
-                    doJobForMathSymbol(expr,i,text);
-                    i = ptr;
-                    break;
-
-                }
-                if(expr == Expressions.div ) {
-                    doJobForMathSymbol(expr,i,text);
+                if (expr == Expressions.minus) {
+                    doJobForMathSymbol(expr, i, text);
                     i = ptr;
                     break;
 
                 }
-                if(expr == Expressions.mul ) {
-                    doJobForMathSymbol(expr,i,text);
+                if (expr == Expressions.div) {
+                    doJobForMathSymbol(expr, i, text);
                     i = ptr;
                     break;
 
                 }
-                if(expr == Expressions.x ) {
+                if (expr == Expressions.mul) {
+                    doJobForMathSymbol(expr, i, text);
+                    i = ptr;
+                    break;
+
+                }
+                if (expr == Expressions.x) {
                     return new Node(Expressions.x);
 
                 }
-                if(expr == Expressions.pow) {
-                   int BracketCountOpen = 0, BracketCountClose = 0;
-                   int q = 0;
-                   for(q = i; q < text.length; --q){
-                       if((BracketCountOpen==BracketCountClose && (BracketCountOpen !=0)  ) || text[q] == 0) {
-                           break;
-                       }
-                       if(checkInput(text,q) == Expressions.openBracket) {
-                           BracketCountOpen++;
-                       }
-                       if(checkInput(text,q) == Expressions.closeBracket) {
-                           BracketCountClose++;
-                       }
-                   }
-                    if(isPowAgain) {
-                        i=i+1;
+                if (expr == Expressions.pow) {
+                    int BracketCountOpen = 0, BracketCountClose = 0;
+                    int q = 0;
+                    for (q = i; q < text.length; --q) {
+                        if ((BracketCountOpen == BracketCountClose && (BracketCountOpen != 0)) || q < 0 || text[q] == 0) {
+                            break;
+                        }
+                        if (checkInput(text, q) == Expressions.openBracket) {
+                            BracketCountOpen++;
+                        }
+                        if (checkInput(text, q) == Expressions.closeBracket) {
+                            BracketCountClose++;
+                        }
+                    }
+                    if (isPowAgain) {
+                        i = i + 1;
                         continue;
                     }
-                    if(((i-1) - (q+1)) == 2){  // значит это (x)
-                        powNode = new Node(Expressions.pow );
-                        powNode.arguments.add(new Node(Expressions.x, powNode ));
-                        left = new Digit((int) (text[i+1] - '0'), powNode);
+                    if (((i - 1) - (q + 1)) == 2) {  // значит это (x)
+                        powNode = new Node(Expressions.pow);
+                        powNode.arguments.add(new Node(Expressions.x, powNode));
+                        if ((text[i] == '^' && text[i + 1] != '(' && text[i+1] !='C' )|| (text[i + 1] != '(' && text[i + 2] != 'd') && (text[i+1] !='C')) {
+                            left = new Digit((int) (text[i + 1] - '0'), powNode);
+                            ptr+=2;
+                        } else {
+                            if(checkInput(text, i+1) == Expressions.Compute) {
+                                int v = ptr;
+                                v-=5;
+                                char[] subCompute = new char[100];
+                                int index = 0;
+                                while(v < text.length && text[v] != 0)  {
+                                    subCompute[index] = text[v];
+                                    v++;
+                                    index++;
+                                }
+                                Import myImport = new Import();
+                                Node arg = myImport.convertAsciMathToSymbolic(subCompute);
+                                ptr+=v -10;
+                                left = arg;
+                                //System.out.println("YES");
+                            }
+                            else {
+                                if(checkInput(text, i+1) == Expressions.digitParse || checkInput(text, i+2) == Expressions.digitParse ) {
+                                    left = new Node(Expressions.digitParse, powNode);
+                                }
+                                else {
+                                    left = new Node(Expressions.digit, powNode);
+                                }
+                            }
+                        }
                         powNode.arguments.add(left);
                         previousNode = powNode;
-                    }
-                    else{
-                        powNode = new Node(Expressions.pow );
-                        ptr = q+1;
+                    } else {
+                        powNode = new Node(Expressions.pow);
+                        ptr = q + 1;
                         isPowAgain = true;
                         char subFunc[] = new char[100];
-                        for(int c = q+2, index = 0; c <(i-1); ++c,++index){
+                        int index = 0;
+                        for (int c = q + 2; c < (i - 1); ++c, ++index) {
                             subFunc[index] = text[c];
                         }
-                        Import myImp = new Import();
-                        powNode.arguments.add(myImp.convertAsciMathToSymbolic(subFunc));
+                        Import importPow = new Import();
+                        powNode.arguments.add(importPow.convertAsciMathToSymbolic(subFunc));
+                        ptr+=index+1;
                         isPowAgain = false;
-                        left = new Digit((int) (text[i+1] - '0'), powNode);
+                        left = new Digit((int) (text[i + 1] - '0'), powNode);
+                        ptr+=2;
                         powNode.arguments.add(left);
                         previousNode = powNode;
+                        ptr++;
                     }
                 }
-                if(expr == Expressions.Assume) {
+                if (expr == Expressions.Assume) {
                     char[] firstArg = new char[100];
                     char[] secondArg = new char[100];
                     char[] thirdArg = new char[100];
                     int index = 0;
-                    int z = i+2;
-                    do{
-                        if(text[z] != ' ') {
+                    int z = i + 2;
+                    do {
+                        if (text[z] != ' ') {
                             firstArg[index] = text[z];
                             index++;
                         }
                         z++;
                     }
-                    while(checkInput(text,z) != Expressions.separator);
+                    while (checkInput(text, z) != Expressions.separator);
                     index = 0;
                     z++;
-                    do{
-                        if(text[z] != ' ') {
+                    do {
+                        if (text[z] != ' ') {
                             secondArg[index] = text[z];
                             index++;
                         }
                         z++;
                     }
-                    while(checkInput(text,z) != Expressions.openBracket);
+                    while (checkInput(text, z) != Expressions.openBracket && checkInput(text, z) != Expressions.digitParse);
                     secondArg[index] = '(';
                     z++;
-                    for(int x = z, myindex=0; x < text.length; ++ x, ++myindex) {
-                        if(firstArg[index] != 0) {
-                            z++;
-                            continue;
-                        }
-                        else {
-                            break;
-                        }
-                    }
                     do {
                         z++;
                     }
-                    while(checkInput(text,z) != Expressions.arrrow);
-                    z+=2;
+                    while (checkInput(text, z) != Expressions.arrrow && checkInput(text, z) != Expressions.digitParse);
+                    z += 2;
                     //z+= firstArg.length + 1;
                     index = 0;
                     do {
-                        if(text[z] != ' ') {
+                        if (text[z] != ' ') {
                             thirdArg[index] = text[z];
                             index++;
                         }
                         z++;
                     }
-                    while(z < text.length&& text[z] != 0 && checkInput(text,z) != Expressions.Assume );
-                    z++;
-                    secondArg = addArgument(secondArg,firstArg);
+                    while (z < text.length && text[z] != 0 && checkInput(text, z) != Expressions.Assume);
+                    secondArg = addArgument(secondArg, firstArg);
                     Import importMy = new Import();
                     Node first = importMy.converttoSymbolic(secondArg);
                     Import importMy2 = new Import();
                     Node second = importMy2.converttoSymbolic(thirdArg);
                     Node rule = new Node(Expressions.Rule);
-                    first.parent=rule;
-                    second.parent=rule;
+                    first.parent = rule;
+                    second.parent = rule;
                     rule.arguments.add(first);
                     rule.arguments.add(second);
                     rules.add(rule);
+                    z--;
+                    ptr = z;
+                    continue;
 
                 }
+                if (expr == Expressions.Compute) {
+                    Node compute = new Node(Expressions.Compute);
+                    char[] computeArg = new char[100];
+                    int c = ptr;
+                    int index = 0;
+                    c++;
+                    do {
+                        if(text[c] == '(' || text[c] == ')') {
+                            c++;
+                            continue;
+                        }
+                        if (text[c] != ' ' ) {
+                            computeArg[index] = text[c];
+                            index++;
+                            c++;
+                        }
+                    }
+                    while (c < text.length && text[c] != 0);
+                    Import myImport = new Import();
+                    Node arg = myImport.convertAsciMathToSymbolic(computeArg);
+                    compute.arguments.add(arg);
+                    ptr+=c-1;
+                    previousNode=compute;
                 }
+            }
         }
              return previousNode;
     }
@@ -270,14 +329,16 @@ public class Import {
         previousNode = node;
     }
     private Expressions checkInput(char[] text, int i) {
-        if(i >= text.length || text[i] == 0) return null;
+        if(i >= text.length || text[i] == 0) {
+            return null;
+        }
         if(text[i] == 's' && text[i + 1] == 'i' && text[i + 2] == 'n') { //sin
             ptr+=2;
             return Expressions.sin;
         }
 
-        if(i +1 < text.length) {
-            if (text[i] == 'x' && text[i + 1] != '*' && text[i + 1] != 't' && ( text[i + 1] != ')' && text[i + 1] != '^' ) ) { //x only
+        if(i +2 < text.length) {
+            if (text[i] == 'x' && text[i + 1] != '*' && text[i + 1] != 't' && text[i + 2] != '^' ) { //x only
                 return Expressions.x;
             }
         }
@@ -287,7 +348,7 @@ public class Import {
             }
         }
 
-        if(text[i] == '^' && Character.isDigit(text[i + 1]) ) {//pow
+        if(text[i] == '^') {//pow
             ptr+=1;
             return Expressions.pow;
         }
@@ -345,6 +406,10 @@ public class Import {
                 ptr += 6;
                 return Expressions.context;
             }
+            if (text[i] == 'C' && text[i + 1] == 'o' && text[i + 2] == 'm' && text[i + 3] == 'p' && text[i + 4] == 'u' && text[i + 5] == 't' && text[i + 6] == 'e') {//compute
+                ptr += 6;
+                return Expressions.Compute;
+            }
         }
 
         if(text[i] == '-' && text[i + 1] == '>') { //->
@@ -373,6 +438,16 @@ public class Import {
         if(Character.isDigit(text[i])) { //x only
             return Expressions.digit;
         }
+        if(i+9 < text.length) {
+            if (text[i] == 'd' && text[i + 1] == 'i' && text[i + 2] == 'g' && text[i + 3] == 'i' && text[i + 4] == 't' && text[i + 5] == 'P' && text[i + 6] == 'a' && text[i + 7] == 'r' && text[i + 8] == 's' && text[i + 9] == 'e') {//digitParse
+                ptr += 9;
+                return Expressions.digitParse;
+            }
+        }
+        if (text[i] == 'd' && text[i + 1] == 'i' && text[i + 2] == 'g'&& text[i + 3] == 'i'&& text[i + 4] == 't') {//digit
+            ptr+=4;
+            return Expressions.digitSymbol;
+        }
         if(text[i] == 'a') {
             return Expressions.a; //a
         }
@@ -400,28 +475,37 @@ public class Import {
     }
     private void doJobForMathSymbol(Expressions expr, int i, char[] text) {
         Node node = new Node(expr);
-        i +=1;
-        if(previousNode != null) {
-            previousNode.parent=node;
-            node.arguments.add(previousNode);
-        }
-        else {
-            if(checkInput(text, i-1) == Expressions.div || checkInput(text, i-1) == Expressions.mul|| checkInput(text, i-1) == Expressions.plus|| checkInput(text, i-1) == Expressions.minus  ) {
-                if(i-2 >=0) {
+        i += 1;
+        Node node2 = null;
+        if (previousNode != null) {
+            node2 = previousNode;
+        } else {
+            if (checkInput(text, i - 1) == Expressions.div || checkInput(text, i - 1) == Expressions.mul || checkInput(text, i - 1) == Expressions.plus || checkInput(text, i - 1) == Expressions.minus) {
+                if (i - 2 >= 0) {
                     if (Character.isDigit(text[i - 2]) == true) {
                         Digit digit = new Digit(text[i - 2] - '0'); // for div
                         node.arguments.add(digit);
                     } else {
                         char[] array = new char[1];
                         array[0] = text[i - 2];
-                        Node node2 = new Node(checkInput(array, 0));
-                        node.arguments.add(node2);
+                        node2 = null;
+                        if (text[i - 2] != 'e') {
+                            node2 = new Node(checkInput(array, 0));
+                        } else {
+                            node2 = new Node(Expressions.digitParse);
+                        }
                     }
                 }
             }
         }
+        if(node2 != null) {
+            node.arguments.add(node2);
+        }
         ptr = i;
-        node.arguments.add(convertAsciMathToSymbolic(text));
+        char[] argument = Arrays.copyOfRange(text,i, text.length);
+        Import importArg = new Import();
+        node.arguments.add(importArg.convertAsciMathToSymbolic(argument));
+        ptr+=importArg.ptr;
         previousNode = node;
     }
     public char[] addArgument(char[] func, char[] arg) {

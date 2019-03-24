@@ -30,16 +30,15 @@ public class Parse {
             result.arguments.add(left);
             result.arguments.add(right);
             */
+            /*
             Node result = new Node(Expressions.arccos);
             Node sqrt = new Node(Expressions.sqrt, result);
             sqrt.arguments.add(new Node(Expressions.x, sqrt));
             sqrt.parent=result;
             result.arguments.add(sqrt);
-
-            /*
+            */
             Node result = new Node(Expressions.arccos);
             result.arguments.add(new Node(Expressions.x, result));
-            */
             /*
             Node result = new Node(Expressions.log);
             result.arguments.add(new Node(Expressions.a, result));

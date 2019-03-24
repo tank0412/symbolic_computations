@@ -1,6 +1,8 @@
 public class Transform {
     private Node previousNode;
     private Node hardDerivative = null;
+    private double digitParse = 0;
+    private boolean check = false;
     public Node derivate(Node symb) {
         Node context;
         Node derivatedNode = null;
@@ -18,18 +20,27 @@ public class Transform {
     private Node symbAlgo(Node expr) {
             for (Node rule : Import.rules) {
                  if(expr.id == rule.arguments.get(0).id) {
+                     if(rule.arguments.size()>1 && rule.arguments.get(0).arguments.size()>1 ) {
+                         if (rule.arguments.get(0).arguments.get(1).id == Expressions.digitParse) {
+                             if (expr.arguments.get(1).id == Expressions.digit) {
+                                 Digit digit = (Digit) expr.arguments.get(1);
+                                 digitParse = digit.value;
+                                 //System.out.println(digitParse);
+                             }
+                         }
+                     }
                      if(expr.arguments.get(0).id != Expressions.x) {
                          hardDerivative=expr.arguments.get(0);
                      }
                      expr.id = rule.arguments.get(1).id;
                      int index = 0;
-                     for(Node node : rule.arguments  ) {
+                     for(Node node : rule.arguments.get(1).arguments  ) {
                          if(index <expr.arguments.size() ) {
-                             expr.arguments.set(index, rule.arguments.get(1).arguments.get(index));
+                             expr.arguments.set(index, traverseExpr(rule.arguments.get(1).arguments.get(index)));
                          }
                          else {
                              if(index <rule.arguments.get(1).arguments.size() ) {
-                                 expr.arguments.add(index,rule.arguments.get(1).arguments.get(index));
+                                 expr.arguments.add(index, traverseExpr(rule.arguments.get(1).arguments.get(index)));
                              }
                          }
                          index++;
@@ -59,14 +70,42 @@ public class Transform {
 
     public Node traverseExpr(Node expr) {
         int index = 0;
-        if(expr.id == Expressions.x) {
+        /*
+        if(expr == null) {
+            return null;
+        }
+        */
+        if(expr.id == Expressions.x && hardDerivative != null) {
             Node getHardDeriv = hardDerivative.traverseInOrderCopy(hardDerivative);
             expr = getHardDeriv;
+            //hardDerivative=null;
+            check = true;
             return expr;
         }
+        if (expr.id == Expressions.Compute) {
+            Node action = expr.arguments.get(0);
+            switch (action.id) {
+                case minus: {
+                    if (action.arguments.get(0).id == Expressions.digitParse && action.arguments.get(1).id == Expressions.digit) {
+                        Digit digit = (Digit) action.arguments.get(1);
+                        double result = digitParse - digit.value;
+                        //System.out.println(result);
+                        Digit computeResult = new Digit(result);
+                        expr = computeResult;
+                        return expr;
+                    }
+                }
+            }
+        }
+        if(expr.id==Expressions.digitParse) {
+            Digit digit = new Digit(digitParse);
+            expr = digit;
+        }
         for(Node node : expr.arguments  ) {
-            expr.arguments.set(index, traverseExpr(node));
-            index++;
+            if(check != true) {
+                expr.arguments.set(index, traverseExpr(node));
+                index++;
+            }
         }
         return expr;
     }
@@ -87,13 +126,14 @@ public class Transform {
                 firstPart = hard;
             }
             context.arguments.set(0, firstPart);
-
+            check = false;
             if (secondPart.id == Expressions.plus || secondPart.id == Expressions.minus) {
                secondPart = traverseContext(secondPart);
                context.arguments.set(1, secondPart);
             } else {
                 secondPart = symbAlgo(secondPart);
                 hard = forHardDeriv(secondPart);
+                check = false;
                 if (hard != null) {
                     secondPart = hard;
                 }

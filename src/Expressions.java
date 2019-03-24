@@ -25,5 +25,8 @@ public enum Expressions{
     arrrow,
     Assume,
     Rule,
-    context
+    context,
+    digitSymbol,
+    Compute,
+    digitParse
 }

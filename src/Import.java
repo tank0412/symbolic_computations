@@ -14,13 +14,13 @@ public class Import {
     }
     private Node convertAsciMathToSymbolic(char[] text) {
         Node powNode;
-        Expressions expr;
+        Expressions expr = null;
         Node left = null;
         for(int i = ptr; i < text.length; ++i) {
             if(i < ptr){
                 i=ptr;
             }
-            if(i >= text.length -1 || text[i] == 0 ) {
+            if(i > text.length -1 || text[i] == 0 ) {
                 break;
             }
             expr = checkInput(text,i);
@@ -230,14 +230,21 @@ public class Import {
                     while (checkInput(text, z) != Expressions.separator);
                     index = 0;
                     z++;
-                    do {
-                        if (text[z] != ' ') {
-                            secondArg[index] = text[z];
-                            index++;
+                    if(text[z+1] != 'x' || text[z+3] == '^') {
+                        do {
+                            if (text[z] != ' ') {
+                                secondArg[index] = text[z];
+                                index++;
+                            }
+                            z++;
                         }
-                        z++;
+                        while (checkInput(text, z) != Expressions.openBracket && checkInput(text, z) != Expressions.digitParse);
                     }
-                    while (checkInput(text, z) != Expressions.openBracket && checkInput(text, z) != Expressions.digitParse);
+                    else {
+                        secondArg[index] = 'x';
+                        index++;
+                        z+=2;
+                    }
                     secondArg[index] = '(';
                     z++;
                     do {

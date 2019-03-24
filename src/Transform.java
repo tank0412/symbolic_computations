@@ -29,10 +29,16 @@ public class Transform {
                              }
                          }
                      }
-                     if(expr.arguments.get(0).id != Expressions.x) {
+                     if(expr.arguments.size() != 0 && expr.arguments.get(0).id != Expressions.x) {
                          hardDerivative=expr.arguments.get(0);
                      }
-                     expr.id = rule.arguments.get(1).id;
+                     if(rule.arguments.get(1).id != Expressions.digit) {
+                         expr.id = rule.arguments.get(1).id;
+                     }
+                     else {
+                         Digit digit = new Digit(((Digit) rule.arguments.get(1)).value);
+                         return  digit;
+                     }
                      int index = 0;
                      for(Node node : rule.arguments.get(1).arguments  ) {
                          if(index <expr.arguments.size() ) {

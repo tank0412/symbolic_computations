@@ -24,7 +24,9 @@ class Symbolic {
         transofmedNode = transform.derivate(importedNode); //transform node with expression to node with derivated expression
         Export export = new Export();
         exportedNode = export.getOutput(transofmedNode);
-        write.writeNode(exportedNode);
+        if(exportedNode != null) {
+            write.writeNode(exportedNode);
+        }
         return;
 
     }

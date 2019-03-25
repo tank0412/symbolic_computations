@@ -7,7 +7,13 @@ public class Transform {
         Node context;
         Node derivatedNode = null;
         if(Import.rules.size() == 0) {
-            derivatedNode = getByInOrder(symb);
+            if(symb.id != Expressions.plot) {
+                derivatedNode = getByInOrder(symb);
+            }
+            else {
+                Plot plot = new Plot();
+                plot.makePlot(symb);
+            }
             return derivatedNode;
         }
         else {

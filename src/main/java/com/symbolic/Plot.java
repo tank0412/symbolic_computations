@@ -2,11 +2,6 @@ package com.symbolic;
 
 import static javafx.application.Application.launch;
 import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.time.LocalDate;
-
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -36,18 +31,21 @@ public class Plot extends Application {
     }
 
     private static XYZDataset<String> createDataset() {
-        String line;
         XYZSeriesCollection<String> dataset = new XYZSeriesCollection<>();
         XYZSeries<String> input;
         int index = 0;
-        for(com.symbolic.Node node: data.arguments) {
-            input = new XYZSeries<>(Integer.toString(index));
-            for(com.symbolic.Node node2: node.arguments) {
-                input.add(((Digit) node2.arguments.get(0)).value, ((Digit) node2.arguments.get(1)).value, ((Digit) node2.arguments.get(2)).value);
-            }
-            dataset.add(input);
-            index++;
+        if(Parse.context != null) {
+            Transform transform = new Transform();
+            data = transform.solve(5);
         }
+            for (com.symbolic.Node node : data.arguments) {
+                input = new XYZSeries<>(Integer.toString(index));
+                for (com.symbolic.Node node2 : node.arguments) {
+                    input.add(((Digit) node2.arguments.get(0)).value, ((Digit) node2.arguments.get(1)).value, ((Digit) node2.arguments.get(2)).value); // add x, y, z from plot arguments
+                }
+                dataset.add(input);
+                index++;
+            }
         return dataset;
     }
 

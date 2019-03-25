@@ -1,5 +1,9 @@
 package com.symbolic;
-import  com.symbolic.Node;
+import java.beans.Expression;
+import java.util.ArrayList;
+
+import static java.lang.Math.*;
+
 public class Transform {
     private Node previousNode;
     private Node hardDerivative = null;
@@ -23,6 +27,121 @@ public class Transform {
             context = parse.getContext();
             return traverseContext(context);
         }
+    }
+    public Node solve(double diapason) {
+        Node plotNode = new Node(Expressions.plot);
+        Node listNode = new Node(Expressions.List);
+        Node context = Parse.context;
+        Node packNode;
+        double result;
+        for(double q = diapason, w = diapason-1; ; q++, w--) {
+            if(q - w == 5) {
+                break;
+            }
+            packNode = doDiapason(context,q);
+            packNode.parent = listNode;
+            listNode.arguments.add(packNode);
+            packNode = doDiapason(context,w);
+            packNode.parent = listNode;
+            listNode.arguments.add(packNode);
+        }
+        listNode.parent=plotNode;
+        plotNode.arguments.add(listNode);
+        return plotNode;
+    }
+    private double solveExpression(Node context, double x) {
+        double result = 0;
+        switch (context.id) {
+            case sin: {
+                result = sin(x);
+                break;
+            }
+            case cos: {
+                result = cos(x);
+                break;
+            }
+            case tg: {
+                result = tan(x);
+                break;
+            }
+            case ctg: {
+                result = 1 / tan(x);
+                break;
+            }
+            case arcsin: {
+                result = asin(x);
+                break;
+            }
+            case arccos: {
+                result = acos(x);
+                break;
+            }
+            case arctg: {
+                result = atan(x);
+                break;
+            }
+            case arcctg: {
+                result = 1 / atan(x);
+                break;
+            }
+            case sqrt: {
+                result = sqrt(x);
+                break;
+            }
+            case pow: {
+                double b = ((Digit) context.arguments.get(1)).value;
+                result = pow(x,b );
+                break;
+            }
+            case ln: {
+                result = log(x);
+                break;
+            }
+            case plus: {
+                double first = parseArgument(context,x,0);
+                double second = parseArgument(context,x,1);;
+                result = first + second;
+                break;
+            }
+            case minus: {
+                double first = parseArgument(context,x,0);
+                double second = parseArgument(context,x,1);;
+                result = first - second;
+                break;
+            }
+            case mul: {
+                double first = parseArgument(context,x,0);
+                double second = parseArgument(context,x,1);;
+                result = first * second;
+                break;
+            }
+            case div: {
+                double first = parseArgument(context,x,0);
+                double second = parseArgument(context,x,1);;
+                result = first / second;
+                break;
+            }
+        }
+        return result;
+    }
+    public double parseArgument(Node context, double x, int argNumber) {
+        double arg = 0;
+        if(context.arguments.get(argNumber).id == Expressions.digit) {
+            arg = ((Digit) context.arguments.get(argNumber)).value;
+        }
+        else {
+            arg = solveExpression(context.arguments.get(argNumber), x);
+        }
+        return arg;
+    }
+    public Node doDiapason(Node context, double digit) {
+        Node packNode;
+        packNode = new Node(Expressions.Pack);
+        double result = solveExpression(context, digit);
+        packNode.arguments.add(new Digit(digit));
+        packNode.arguments.add(new Digit(result));
+        packNode.arguments.add(new Digit(1));
+        return packNode;
     }
 
     private Node symbAlgo(Node expr) {

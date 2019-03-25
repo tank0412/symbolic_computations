@@ -304,18 +304,18 @@ public class Import {
                     previousNode=compute;
                 }
                 if(expr == Expressions.plot) {
-                    ArrayList<ArrayList> listWithDots = new ArrayList<ArrayList>();
-                    ArrayList listOfCoordinates;
+                    Node plotNode = new Node(Expressions.plot);
                     char[] x = new char[4];
                     char[] y = new char[4];
                     char[] z = new char[4];
                     int index = 0;
                     i+=5;
                     while (checkInput(text, i) == Expressions.List) {
+                        Node listNode = new Node(Expressions.List);
                            i+=2;
                             while(checkInput(text, i) == Expressions.Pack) {
+                                Node packNode = new Node(Expressions.Pack);
                                 ptr2 = 0;
-                                listOfCoordinates = new ArrayList();
                                 i+=2;
                                 x = parseDigit(text,i);
                                 i++;
@@ -329,16 +329,18 @@ public class Import {
                                 int temp = 0;
                                 int temp2 = Integer.parseInt(new String(test));
                                 temp=charDigitToInt(x);
-                                listOfCoordinates.add(temp);
+                                packNode.arguments.add(new Digit(temp));
                                 temp=charDigitToInt(y);
-                                listOfCoordinates.add(temp);
+                                packNode.arguments.add(new Digit(temp));
                                 temp=charDigitToInt(z);
-                                listOfCoordinates.add(temp);
-                                ArrayList tempList = listOfCoordinates;
-                                listWithDots.add(tempList);
+                                packNode.arguments.add(new Digit(temp));
+                                packNode.parent=listNode;
+                                listNode.arguments.add(packNode);
                             }
-                            previousNode = new Node(Expressions.plot);
+                        listNode.parent=plotNode;
+                        plotNode.arguments.add(listNode);
                         }
+                    previousNode = plotNode;
                     }
                 }
         }

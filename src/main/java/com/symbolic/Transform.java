@@ -51,50 +51,51 @@ public class Transform {
     }
     private double solveExpression(Node context, double x) {
         double result = 0;
+        double localX = checkIsXInArg(context,x);
         switch (context.id) {
             case sin: {
-                result = sin(x);
+                result = sin(localX);
                 break;
             }
             case cos: {
-                result = cos(x);
+                result = cos(localX);
                 break;
             }
             case tg: {
-                result = tan(x);
+                result = tan(localX);
                 break;
             }
             case ctg: {
-                result = 1 / tan(x);
+                result = 1 / tan(localX);
                 break;
             }
             case arcsin: {
-                result = asin(x);
+                result = asin(localX);
                 break;
             }
             case arccos: {
-                result = acos(x);
+                result = acos(localX);
                 break;
             }
             case arctg: {
-                result = atan(x);
+                result = atan(localX);
                 break;
             }
             case arcctg: {
-                result = 1 / atan(x);
+                result = 1 / atan(localX);
                 break;
             }
             case sqrt: {
-                result = sqrt(x);
+                result = sqrt(localX);
                 break;
             }
             case pow: {
                 double b = ((Digit) context.arguments.get(1)).value;
-                result = pow(x,b );
+                result = pow(localX,b );
                 break;
             }
             case ln: {
-                result = log(x);
+                result = log(localX);
                 break;
             }
             case plus: {
@@ -142,6 +143,16 @@ public class Transform {
         packNode.arguments.add(new Digit(result));
         packNode.arguments.add(new Digit(1));
         return packNode;
+    }
+    public double checkIsXInArg(Node expr, double x) {
+        double result = 0;
+        if(expr.arguments.get(0).id == Expressions.x) {
+            return x;
+        }
+        else {
+            result = solveExpression(expr.arguments.get(0), x);
+            return result;
+        }
     }
 
     private Node symbAlgo(Node expr) {

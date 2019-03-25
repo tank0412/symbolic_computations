@@ -1,3 +1,5 @@
+package com.symbolic;
+
 import java.util.ArrayList;
 
 public class Node {

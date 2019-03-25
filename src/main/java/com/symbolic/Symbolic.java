@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+package com.symbolic;
 
 class Symbolic {
     public static void main(String[] args) {

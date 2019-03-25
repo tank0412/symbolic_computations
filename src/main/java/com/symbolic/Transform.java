@@ -1,3 +1,5 @@
+package com.symbolic;
+import  com.symbolic.Node;
 public class Transform {
     private Node previousNode;
     private Node hardDerivative = null;
@@ -257,7 +259,7 @@ public class Transform {
                 break;
             }
             case ctg: {
-                //Node tgNode = new Node(0,Expressions.div);
+                //com.symbolic.Node tgNode = new com.symbolic.Node(0,com.symbolic.Expressions.div);
                 int index = 0;
                 Node ctgNode = prepareMinusDiv();
                 Node denominator = preparePow();
@@ -320,7 +322,7 @@ public class Transform {
                 break;
             }
             case arccos: {
-                //Node arccosNode = new Node(0,Expressions.div);
+                //com.symbolic.Node arccosNode = new com.symbolic.Node(0,com.symbolic.Expressions.div);
                 int index = 0;
                 Node arccosNode = prepareMinusDiv();
                 Node denominator = new Node(Expressions.sqrt); //sqrt(1-

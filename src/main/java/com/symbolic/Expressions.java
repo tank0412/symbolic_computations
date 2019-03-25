@@ -1,3 +1,5 @@
+package com.symbolic;
+
 public enum Expressions{
     plus,
     minus,

@@ -1,3 +1,5 @@
+package com.symbolic;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -5,7 +7,7 @@ public class Parse {
     static Node context = null;
 
     char[] getInput() {
-        System.out.println("Enter  an expression Or Symbolic Algo");
+        System.out.println("Enter  an expression, Algo or plot command");
         Scanner reader = new Scanner(System.in);
         String expr = reader.nextLine();
         Import.rules=  new ArrayList<Node>();

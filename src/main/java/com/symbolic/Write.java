@@ -1,3 +1,5 @@
+package com.symbolic;
+
 public class Write {
     public void writeText(char[] Text) {
         System.out.println(Text);

@@ -28,5 +28,8 @@ public enum Expressions{
     context,
     digitSymbol,
     Compute,
-    digitParse
+    digitParse,
+    plot,
+    List,
+    Pack
 }

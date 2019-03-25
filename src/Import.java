@@ -6,6 +6,7 @@ public class Import {
     private boolean isPowAgain = false;
     private Node sinNode;
     private Node previousNode;
+    private int ptr2 = 0;
     public static ArrayList<Node> rules;
     public Node converttoSymbolic(char[] text) {
         Node node = convertAsciMathToSymbolic(text);
@@ -302,7 +303,44 @@ public class Import {
                     ptr+=c-1;
                     previousNode=compute;
                 }
-            }
+                if(expr == Expressions.plot) {
+                    ArrayList<ArrayList> listWithDots = new ArrayList<ArrayList>();
+                    ArrayList listOfCoordinates;
+                    char[] x = new char[4];
+                    char[] y = new char[4];
+                    char[] z = new char[4];
+                    int index = 0;
+                    i+=5;
+                    while (checkInput(text, i) == Expressions.List) {
+                           i+=2;
+                            while(checkInput(text, i) == Expressions.Pack) {
+                                ptr2 = 0;
+                                listOfCoordinates = new ArrayList();
+                                i+=2;
+                                x = parseDigit(text,i);
+                                i++;
+                                i+=ptr2;
+                                y = parseDigit(text,i);
+                                i+=ptr2;
+                                z = parseDigit(text,i);
+                                i+=ptr2;
+                                char[] test = {'1'};
+                                String s = (new String(x));
+                                int temp = 0;
+                                int temp2 = Integer.parseInt(new String(test));
+                                temp=charDigitToInt(x);
+                                listOfCoordinates.add(temp);
+                                temp=charDigitToInt(y);
+                                listOfCoordinates.add(temp);
+                                temp=charDigitToInt(z);
+                                listOfCoordinates.add(temp);
+                                ArrayList tempList = listOfCoordinates;
+                                listWithDots.add(tempList);
+                            }
+                            previousNode = new Node(Expressions.plot);
+                        }
+                    }
+                }
         }
              return previousNode;
     }
@@ -402,6 +440,18 @@ public class Import {
         if(text[i] == 'l' && text[i + 1] == 'o' && text[i + 2] == 'g') { //log
             ptr+=2;
             return Expressions.log;
+        }
+        if (text[i] == 'p' && text[i + 1] == 'l' && text[i + 2] == 'o'&& text[i + 3] == 't') {//plot
+            ptr+=3;
+            return Expressions.plot;
+        }
+        if (text[i] == 'l' && text[i + 1] == '(') {//list
+            ptr+=1;
+            return Expressions.List;
+        }
+        if (text[i] == 'p' && text[i + 1] == '(') {//plot
+            ptr+=1;
+            return Expressions.Pack;
         }
         if(text[i] == 'd' && text[i + 1] == '(') { //d(
             ptr+=1;
@@ -533,5 +583,27 @@ public class Import {
         }
         func[i] = ')';
         return  func;
+    }
+    public int charDigitToInt(char[] text) {
+        int decimals = 1000;
+        int digit = 0;
+        for(int q = text.length-1; q >=0; q--) {
+            if(text[q] != 0) {
+                digit = Character.getNumericValue(text[q]) * decimals;
+            }
+            decimals/=10;
+        }
+        return digit;
+    }
+    public char[] parseDigit(char[] text, int i) {
+        char[] digit = new char[4];
+        int index = 0;
+        while(checkInput(text, i) != Expressions.separator && checkInput(text, i) != Expressions.closeBracket ) {
+            digit[index] = text[i];
+            i++;
+            index++;
+            ptr2++;
+        }
+        return digit;
     }
 }

@@ -17,6 +17,11 @@ public class Transform {
                 derivatedNode = getByInOrder(symb);
             }
             else {
+                if(symb.arguments.get(0).id != Expressions.List) {
+                        Transform transform = new Transform();
+                        Node plotWithLists = transform.solve(5, symb.arguments.get(0) );
+                        symb=plotWithLists;
+                }
                 Plot plot = new Plot();
                 plot.makePlot(symb);
             }
@@ -28,10 +33,10 @@ public class Transform {
             return traverseContext(context);
         }
     }
-    public Node solve(double diapason) {
+    public Node solve(double diapason, Node sendContext) {
         Node plotNode = new Node(Expressions.plot);
         Node listNode = new Node(Expressions.List);
-        Node context = Parse.context;
+        Node context = sendContext;
         Node packNode;
         double result;
         for(double q = diapason, w = diapason-1; ; q++, w--) {

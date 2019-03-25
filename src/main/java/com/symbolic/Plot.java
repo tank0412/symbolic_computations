@@ -39,10 +39,6 @@ public class Plot extends Application {
         XYZSeriesCollection<String> dataset = new XYZSeriesCollection<>();
         XYZSeries<String> input;
         int index = 0;
-        if(Parse.context != null) {
-            Transform transform = new Transform();
-            data = transform.solve(5);
-        }
             for (com.symbolic.Node node : data.arguments) {
                 input = new XYZSeries<>(Integer.toString(index));
                 for (com.symbolic.Node node2 : node.arguments) {

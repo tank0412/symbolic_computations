@@ -312,36 +312,46 @@ public class Import {
                     char[] z = new char[4];
                     int index = 0;
                     i+=5;
-                    while (checkInput(text, i) == Expressions.List) {
-                        Node listNode = new Node(Expressions.List);
-                           i+=2;
-                            while(checkInput(text, i) == Expressions.Pack) {
+                    if(checkInput(text, i) == Expressions.List) {
+                        while (checkInput(text, i) == Expressions.List) {
+                            Node listNode = new Node(Expressions.List);
+                            i += 2;
+                            while (checkInput(text, i) == Expressions.Pack) {
                                 Node packNode = new Node(Expressions.Pack);
                                 ptr2 = 0;
-                                i+=2;
-                                x = parseDigit(text,i);
+                                i += 2;
+                                x = parseDigit(text, i);
                                 i++;
-                                i+=ptr2;
-                                y = parseDigit(text,i);
-                                i+=ptr2;
-                                z = parseDigit(text,i);
-                                i+=ptr2;
+                                i += ptr2;
+                                y = parseDigit(text, i);
+                                i += ptr2;
+                                z = parseDigit(text, i);
+                                i += ptr2;
                                 char[] test = {'1'};
                                 String s = (new String(x));
                                 int temp = 0;
                                 int temp2 = Integer.parseInt(new String(test));
-                                temp=charDigitToInt(x);
+                                temp = charDigitToInt(x);
                                 packNode.arguments.add(new Digit(temp));
-                                temp=charDigitToInt(y);
+                                temp = charDigitToInt(y);
                                 packNode.arguments.add(new Digit(temp));
-                                temp=charDigitToInt(z);
+                                temp = charDigitToInt(z);
                                 packNode.arguments.add(new Digit(temp));
-                                packNode.parent=listNode;
+                                packNode.parent = listNode;
                                 listNode.arguments.add(packNode);
                             }
-                        listNode.parent=plotNode;
-                        plotNode.arguments.add(listNode);
+                            listNode.parent = plotNode;
+                            plotNode.arguments.add(listNode);
                         }
+                    }
+                    else {
+                        Import importPlot = new Import();
+                        char[] context = Arrays.copyOfRange(text, i, text.length);
+                        Node plotArg = importPlot.convertAsciMathToSymbolic(context);
+                        ptr+=importPlot.ptr;
+                        plotArg.parent=plotNode;
+                        plotNode.arguments.add(plotArg);
+                    }
                     previousNode = plotNode;
                     }
                 }
@@ -521,6 +531,7 @@ public class Import {
     private void checkX(char[] text, int i) {
         if(checkInput(text,i) == Expressions.x) {
             sinNode.arguments.add(new Node(Expressions.x,sinNode ));
+            ptr+=3;
 
         }
         else{

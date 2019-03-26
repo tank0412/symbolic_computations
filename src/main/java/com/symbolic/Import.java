@@ -173,7 +173,7 @@ public class Import {
                         } else {
                             if(checkInput(text, i+1) == Expressions.Compute) {
                                 int v = ptr;
-                                v-=5;
+                                v-=7;
                                 char[] subCompute = new char[100];
                                 int index = 0;
                                 while(v < text.length && text[v] != 0)  {

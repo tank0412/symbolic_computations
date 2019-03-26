@@ -33,5 +33,6 @@ public enum Expressions{
     digitParse,
     plot,
     List,
-    Pack
+    Pack,
+    Range
 }

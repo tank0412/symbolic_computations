@@ -328,10 +328,7 @@ public class Import {
                                 i += ptr2;
                                 z = parseDigit(text, i);
                                 i += ptr2;
-                                char[] test = {'1'};
-                                String s = (new String(x));
                                 int temp = 0;
-                                int temp2 = Integer.parseInt(new String(test));
                                 temp = charDigitToInt(x);
                                 packNode.arguments.add(new Digit(temp));
                                 temp = charDigitToInt(y);
@@ -355,6 +352,22 @@ public class Import {
                     }
                     previousNode = plotNode;
                     }
+                if(expr == Expressions.Range) {
+                    Parse.range = new double[2];
+                    Node rangeNode = new Node(Expressions.Range);
+                    i+=6;
+                    double to, from = 0;
+                    char[] toSymb, fromSymb;
+                    fromSymb = parseDigit(text, i);
+                    i+=2;
+                    toSymb = parseDigit(text, i);
+                    i+=2;
+                    from = charDigitToInt(fromSymb);
+                    to = charDigitToInt(toSymb);
+                    Parse.range[0] = from;
+                    Parse.range[1] = to;
+                    previousNode = rangeNode;
+                }
                 }
         }
              return previousNode;
@@ -472,7 +485,10 @@ public class Import {
             ptr+=1;
             return Expressions.Assume;
         }
-
+        if (text[i] == 'r' && text[i + 1] == 'a' && text[i + 2] == 'n'&& text[i + 3] == 'g'&& text[i + 4] == 'e') {//plot
+            ptr+=4;
+            return Expressions.Range;
+        }
         if(i+6 < text.length) {
             if (text[i] == 'c' && text[i + 1] == 'o' && text[i + 2] == 'n' && text[i + 3] == 't' && text[i + 4] == 'e' && text[i + 5] == 'x' && text[i + 6] == 't') {//context
                 ptr += 6;

@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class Parse {
     static Node context = null;
+    static double[] range = null;
 
     char[] getInput() {
         System.out.println("Enter  an expression, Algo or plot command");
@@ -14,8 +15,8 @@ public class Parse {
         return expr.toCharArray();
     }
 
-    char[] getInputAgain() {
-        System.out.println("Context is changed. Enter algo now");
+    char[] getInputAgain(String message) {
+        System.out.println(message);
         Scanner reader = new Scanner(System.in);
         String expr = reader.nextLine();
         return expr.toCharArray();

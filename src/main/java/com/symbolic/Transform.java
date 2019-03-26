@@ -38,8 +38,12 @@ public class Transform {
         Node listNode = new Node(Expressions.List);
         Node context = sendContext;
         Node packNode;
-        double result;
-        for(double w = 1; w<=diapason; ++w) {
+        double from = 1, to = 5;
+        if(Parse.range != null) {
+            from = Parse.range[0];
+            to = Parse.range[1];
+        }
+        for(double w = from; w<=to; ++w) {
             packNode = doDiapason(context,w);
             packNode.parent = listNode;
             listNode.arguments.add(packNode);

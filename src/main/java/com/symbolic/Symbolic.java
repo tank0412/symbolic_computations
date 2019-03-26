@@ -13,9 +13,16 @@ class Symbolic {
         importedNode = import_mine.converttoSymbolic(text);// convert char to node (internal symbolic view)
         if(importedNode.id == Expressions.context) {
             Parse.context = importedNode.arguments.get(0);
-            text = parse.getInputAgain();
+            text = parse.getInputAgain("Context is changed. Enter algo now");
             Import import_mine2 = new Import();
             importedNode = import_mine2.converttoSymbolic(text);
+        }
+        else {
+            if(importedNode.id == Expressions.Range) {
+                text = parse.getInputAgain("Range is changed. Call plot now");
+                Import import_mine3 = new Import();
+                importedNode = import_mine3.converttoSymbolic(text);
+            }
         }
         if(Import.rules == null) {
             write.writeNode(importedNode);

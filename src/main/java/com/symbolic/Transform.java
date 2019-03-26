@@ -39,13 +39,7 @@ public class Transform {
         Node context = sendContext;
         Node packNode;
         double result;
-        for(double q = diapason, w = diapason-1; ; q++, w--) {
-            if(q - w == 5) {
-                break;
-            }
-            packNode = doDiapason(context,q);
-            packNode.parent = listNode;
-            listNode.arguments.add(packNode);
+        for(double w = 1; w<=diapason; ++w) {
             packNode = doDiapason(context,w);
             packNode.parent = listNode;
             listNode.arguments.add(packNode);

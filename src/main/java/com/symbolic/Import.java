@@ -165,6 +165,7 @@ public class Import {
                     }
                     if (((i - 1) - (q + 1)) == 2) {  // значит это (x)
                         powNode = new Node(Expressions.pow);
+                        ptr+=2;
                         powNode.arguments.add(new Node(Expressions.x, powNode));
                         if ((text[i] == '^' && text[i + 1] != '(' && text[i+1] !='C' )|| (text[i + 1] != '(' && text[i + 2] != 'd') && (text[i+1] !='C')) {
                             left = new Digit((int) (text[i + 1] - '0'), powNode);
